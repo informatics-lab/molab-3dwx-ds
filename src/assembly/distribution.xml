@@ -1,0 +1,57 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3 http://maven.apache.org/xsd/assembly-1.1.3.xsd">
+    <id>distribution</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <formats>
+        <format>zip</format>
+    </formats>
+
+    <!-- put an empty log dir in the distribution -->
+    <fileSets>
+        <fileSet>
+            <directory>/src/assembly</directory>
+            <outputDirectory>/log</outputDirectory>
+            <excludes>
+                <exclude>**/*</exclude>
+            </excludes>
+        </fileSet>
+    </fileSets>
+
+    <files>
+        <!-- app props -->
+        <file>
+            <source>src/config/application.yml</source>
+            <outputDirectory>/</outputDirectory>
+            <destName>application.yml</destName>
+        </file>
+
+        <!-- executable jar -->
+        <file>
+            <source>${project.build.directory}/${project.artifactId}-${version}.jar</source>
+            <outputDirectory>/</outputDirectory>
+            <destName>${project.artifactId}.jar</destName>
+        </file>
+
+        <!-- shell script-->
+        <file>
+            <filtered>true</filtered>
+            <source>src/config/service.sh</source>
+            <outputDirectory>/</outputDirectory>
+            <destName>${project.artifactId}.sh</destName>
+            <fileMode>754</fileMode>
+            <lineEnding>unix</lineEnding>
+        </file>
+
+        <!-- logback -->
+        <file>
+            <filtered>true</filtered>
+            <source>src/config/logback.xml</source>
+            <outputDirectory>/</outputDirectory>
+            <destName>logback.xml</destName>
+            <fileMode>754</fileMode>
+        </file>
+
+    </files>
+
+</assembly>
