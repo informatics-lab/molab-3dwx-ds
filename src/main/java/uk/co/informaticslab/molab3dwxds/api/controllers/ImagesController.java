@@ -14,8 +14,10 @@ import uk.co.informaticslab.molab3dwxds.api.caching.utils.CacheControlUtils;
 import uk.co.informaticslab.molab3dwxds.api.params.DTRange;
 import uk.co.informaticslab.molab3dwxds.api.params.ForecastDTRange;
 import uk.co.informaticslab.molab3dwxds.api.params.ModelRunDTRange;
+import uk.co.informaticslab.molab3dwxds.domain.DataDimensions;
 import uk.co.informaticslab.molab3dwxds.domain.Image;
 import uk.co.informaticslab.molab3dwxds.domain.Phenomenon;
+import uk.co.informaticslab.molab3dwxds.domain.Resolution;
 import uk.co.informaticslab.molab3dwxds.services.ImageService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -76,7 +78,7 @@ public class ImagesController {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
 
-        Image image = new Image(modelRunDT, forecastDT, phenomenon, data);
+        Image image = new Image(data, Resolution.asDefault(), modelRunDT, forecastDT, phenomenon, DataDimensions.asDefault());
 
         Image respImage = imageService.insert(image);
         LOG.debug("Image inserted successfully...");

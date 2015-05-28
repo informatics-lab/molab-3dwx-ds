@@ -15,9 +15,7 @@ import uk.co.informaticslab.molab3dwxds.api.params.ByteRange;
 import uk.co.informaticslab.molab3dwxds.api.params.DTRange;
 import uk.co.informaticslab.molab3dwxds.api.params.ModelRunDTRange;
 import uk.co.informaticslab.molab3dwxds.api.streaming.MediaStreamingResponse;
-import uk.co.informaticslab.molab3dwxds.domain.Media;
-import uk.co.informaticslab.molab3dwxds.domain.Phenomenon;
-import uk.co.informaticslab.molab3dwxds.domain.Video;
+import uk.co.informaticslab.molab3dwxds.domain.*;
 import uk.co.informaticslab.molab3dwxds.services.VideoService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -76,7 +74,7 @@ public class VideosController {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
 
-        Video video = new Video(modelRunDT, phenomenon, data);
+        Video video = new Video(data, Resolution.asDefault(), modelRunDT, phenomenon, DataDimensions.asDefault());
 
         Video respVideo = videoService.insert(video);
         LOG.debug("Video inserted successfully...");

@@ -15,20 +15,23 @@ public class Video extends Media {
     public static final String ID = "id";
     public static final String MODEL_RUN_DT = "model_run_dt";
     public static final String PHENOMENON = "phenomenon";
+    public static final String DATA_DIMENSIONS = "data_dimensions";
 
     @Id
     private String id;
     private DateTime modelRunDT;
     private Phenomenon phenomenon;
+    private DataDimensions dataDimensions;
 
     public Video() {
     }
 
     @PersistenceConstructor
-    public Video(DateTime modelRunDT, Phenomenon phenomenon, byte[] data) {
-        super(data);
+    public Video(byte[] data, Resolution resolution, DateTime modelRunDT, Phenomenon phenomenon, DataDimensions dataDimensions) {
+        super(data, resolution);
         this.modelRunDT = modelRunDT;
         this.phenomenon = phenomenon;
+        this.dataDimensions = dataDimensions;
     }
 
     public String getId() {
@@ -43,13 +46,17 @@ public class Video extends Media {
         return phenomenon;
     }
 
+    public DataDimensions getDataDimensions() {
+        return dataDimensions;
+    }
+
     @Override
     public String toString() {
         return "Video{" +
                 "id='" + id + '\'' +
                 ", modelRunDT=" + modelRunDT +
                 ", phenomenon=" + phenomenon +
+                ", dataDimensions=" + dataDimensions +
                 "} " + super.toString();
     }
-
 }

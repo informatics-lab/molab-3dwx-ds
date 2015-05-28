@@ -15,22 +15,25 @@ public class Image extends Media {
     public static final String MODEL_RUN_DT = "model_run_dt";
     public static final String FORECAST_DT = "forecast_dt";
     public static final String PHENOMENON = "phenomenon";
+    public static final String DATA_DIMENSIONS = "data_dimensions";
 
     @Id
     private String id;
     private DateTime modelRunDT;
     private DateTime forecastDT;
     private Phenomenon phenomenon;
+    private DataDimensions dataDimensions;
 
     public Image() {
     }
 
     @PersistenceConstructor
-    public Image(DateTime modelRunDT, DateTime forecastDT, Phenomenon phenomenon, byte[] data) {
-        super(data);
+    public Image(byte[] data, Resolution resolution, DateTime modelRunDT, DateTime forecastDT, Phenomenon phenomenon, DataDimensions dataDimensions) {
+        super(data, resolution);
         this.modelRunDT = modelRunDT;
         this.forecastDT = forecastDT;
         this.phenomenon = phenomenon;
+        this.dataDimensions = dataDimensions;
     }
 
     public String getId() {
@@ -49,6 +52,10 @@ public class Image extends Media {
         return phenomenon;
     }
 
+    public DataDimensions getDataDimensions() {
+        return dataDimensions;
+    }
+
     @Override
     public String toString() {
         return "Image{" +
@@ -56,6 +63,7 @@ public class Image extends Media {
                 ", modelRunDT=" + modelRunDT +
                 ", forecastDT=" + forecastDT +
                 ", phenomenon=" + phenomenon +
+                ", dataDimensions=" + dataDimensions +
                 "} " + super.toString();
     }
 }
