@@ -3,17 +3,18 @@ package uk.co.informaticslab.molab3dwxds.api.controllers;
 import com.google.common.io.ByteStreams;
 import com.theoryinpractise.halbuilder.api.Representation;
 import com.theoryinpractise.halbuilder.api.RepresentationFactory;
+import org.apache.tika.Tika;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import uk.co.informaticslab.molab3dwxds.api.UriResolver;
 import uk.co.informaticslab.molab3dwxds.api.caching.utils.CacheControlUtils;
 import uk.co.informaticslab.molab3dwxds.api.params.DTRange;
 import uk.co.informaticslab.molab3dwxds.api.params.ForecastDTRange;
 import uk.co.informaticslab.molab3dwxds.api.params.ModelRunDTRange;
+import uk.co.informaticslab.molab3dwxds.api.utils.UriResolver;
 import uk.co.informaticslab.molab3dwxds.domain.DataDimensions;
 import uk.co.informaticslab.molab3dwxds.domain.Image;
 import uk.co.informaticslab.molab3dwxds.domain.Phenomenon;
@@ -37,6 +38,7 @@ import static uk.co.informaticslab.molab3dwxds.domain.Image.*;
 public class ImagesController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ImagesController.class);
+    private static final Tika TIKA = new Tika();
 
     public static final String IMAGES = "images";
 
@@ -66,6 +68,7 @@ public class ImagesController {
         DateTime forecastDT;
         Phenomenon phenomenon;
         byte[] data;
+        String mimeType;
 
         try {
             modelRunDT = new DateTime(form.getField(MODEL_RUN_DT).getValue());
@@ -73,12 +76,13 @@ public class ImagesController {
             phenomenon = Phenomenon.valueOf(form.getField(PHENOMENON).getValue().toLowerCase());
             FormDataBodyPart bodyPart = form.getField(DATA);
             data = ByteStreams.toByteArray(bodyPart.getValueAs(InputStream.class));
+            mimeType = TIKA.detect(data);
         } catch (Exception e) {
             LOG.error("Error reading multipart form data", e);
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
 
-        Image image = new Image(data, Resolution.asDefault(), modelRunDT, forecastDT, phenomenon, DataDimensions.asDefault());
+        Image image = new Image(data, mimeType, Resolution.asDefault(), modelRunDT, forecastDT, phenomenon, DataDimensions.asDefault());
 
         Image respImage = imageService.insert(image);
         LOG.debug("Image inserted successfully...");
@@ -109,10 +113,12 @@ public class ImagesController {
      */
     @Path("/{" + ID + "}/data")
     @GET
-    @Produces("image/png")
     public Response getImageDataById(@PathParam(ID) String id) {
-        byte[] data = imageService.getById(id, true).getData();
-        return Response.ok(data).cacheControl(CacheControlUtils.permanent()).build();
+        Image image = imageService.getById(id, true);
+        return Response.ok(image.getData())
+                .type(image.getMimeType())
+                .cacheControl(CacheControlUtils.permanent())
+                .build();
     }
 
 

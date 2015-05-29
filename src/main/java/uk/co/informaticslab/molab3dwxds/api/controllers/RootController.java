@@ -3,7 +3,7 @@ package uk.co.informaticslab.molab3dwxds.api.controllers;
 import com.theoryinpractise.halbuilder.api.Representation;
 import com.theoryinpractise.halbuilder.api.RepresentationFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import uk.co.informaticslab.molab3dwxds.api.UriResolver;
+import uk.co.informaticslab.molab3dwxds.api.utils.UriResolver;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

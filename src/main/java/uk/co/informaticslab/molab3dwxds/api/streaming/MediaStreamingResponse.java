@@ -64,6 +64,7 @@ public final class MediaStreamingResponse {
             StreamingOutput streamer = new MediaStreamer(this.media, byteRange);
 
             return this.respBuilder
+                    .type(this.media.getMimeType())
                     .header("Accept-Ranges", "bytes")
                     .header("Content-Range", toContentRange(byteRange, this.media))
                     .header(HttpHeaders.CONTENT_LENGTH, byteRange.getLength())

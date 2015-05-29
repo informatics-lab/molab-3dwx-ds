@@ -28,8 +28,8 @@ public class Image extends Media {
     }
 
     @PersistenceConstructor
-    public Image(byte[] data, Resolution resolution, DateTime modelRunDT, DateTime forecastDT, Phenomenon phenomenon, DataDimensions dataDimensions) {
-        super(data, resolution);
+    public Image(byte[] data, String mimeType, Resolution resolution, DateTime modelRunDT, DateTime forecastDT, Phenomenon phenomenon, DataDimensions dataDimensions) {
+        super(data, mimeType, resolution);
         this.modelRunDT = modelRunDT;
         this.forecastDT = forecastDT;
         this.phenomenon = phenomenon;

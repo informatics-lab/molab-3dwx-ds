@@ -27,8 +27,8 @@ public class Video extends Media {
     }
 
     @PersistenceConstructor
-    public Video(byte[] data, Resolution resolution, DateTime modelRunDT, Phenomenon phenomenon, DataDimensions dataDimensions) {
-        super(data, resolution);
+    public Video(byte[] data, String mimeType, Resolution resolution, DateTime modelRunDT, Phenomenon phenomenon, DataDimensions dataDimensions) {
+        super(data, mimeType, resolution);
         this.modelRunDT = modelRunDT;
         this.phenomenon = phenomenon;
         this.dataDimensions = dataDimensions;
@@ -59,4 +59,5 @@ public class Video extends Media {
                 ", dataDimensions=" + dataDimensions +
                 "} " + super.toString();
     }
+
 }

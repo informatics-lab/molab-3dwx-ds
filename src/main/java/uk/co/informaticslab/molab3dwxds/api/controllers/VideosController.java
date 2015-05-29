@@ -3,18 +3,19 @@ package uk.co.informaticslab.molab3dwxds.api.controllers;
 import com.google.common.io.ByteStreams;
 import com.theoryinpractise.halbuilder.api.Representation;
 import com.theoryinpractise.halbuilder.api.RepresentationFactory;
+import org.apache.tika.Tika;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import uk.co.informaticslab.molab3dwxds.api.UriResolver;
 import uk.co.informaticslab.molab3dwxds.api.caching.utils.CacheControlUtils;
 import uk.co.informaticslab.molab3dwxds.api.params.ByteRange;
 import uk.co.informaticslab.molab3dwxds.api.params.DTRange;
 import uk.co.informaticslab.molab3dwxds.api.params.ModelRunDTRange;
 import uk.co.informaticslab.molab3dwxds.api.streaming.MediaStreamingResponse;
+import uk.co.informaticslab.molab3dwxds.api.utils.UriResolver;
 import uk.co.informaticslab.molab3dwxds.domain.*;
 import uk.co.informaticslab.molab3dwxds.services.VideoService;
 
@@ -35,7 +36,7 @@ import static uk.co.informaticslab.molab3dwxds.domain.Video.*;
 public class VideosController {
 
     private static final Logger LOG = LoggerFactory.getLogger(VideosController.class);
-
+    private static final Tika TIKA = new Tika();
     public static final String VIDEOS = "videos";
 
     private final VideoService videoService;
@@ -63,18 +64,20 @@ public class VideosController {
         DateTime modelRunDT;
         Phenomenon phenomenon;
         byte[] data;
+        String mimeType;
 
         try {
             modelRunDT = new DateTime(form.getField(MODEL_RUN_DT).getValue());
             phenomenon = Phenomenon.valueOf(form.getField(PHENOMENON).getValue().toLowerCase());
             FormDataBodyPart bodyPart = form.getField(DATA);
             data = ByteStreams.toByteArray(bodyPart.getValueAs(InputStream.class));
+            mimeType = TIKA.detect(data);
         } catch (Exception e) {
             LOG.error("Error reading multipart form data", e);
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
 
-        Video video = new Video(data, Resolution.asDefault(), modelRunDT, phenomenon, DataDimensions.asDefault());
+        Video video = new Video(data, mimeType, Resolution.asDefault(), modelRunDT, phenomenon, DataDimensions.asDefault());
 
         Video respVideo = videoService.insert(video);
         LOG.debug("Video inserted successfully...");
@@ -104,7 +107,6 @@ public class VideosController {
      */
     @Path("/{" + ID + "}/data")
     @GET
-    @Produces("video/ogg")
     public Response getVideoDataById(@PathParam(ID) String id,
                                      @HeaderParam("Range") ByteRange range) {
         Response response = null;

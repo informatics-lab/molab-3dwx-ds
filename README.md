@@ -46,11 +46,15 @@ POST images to {root uri}/images with the following fields:
 'phenomenon'   : phenomenon that image represents eg. 'cloud_fraction'  
 'data'         : image file  
 
+For sample representation see the json file attached.
+
 #### Videos
 POST videos to {root uri}/videos with the following fields:  
 'model_run_dt' : date time of model run eg. '2015-01-01T00:00:00.000Z'  
 'phenomenon'   : phenomenon that image represents eg. 'cloud_fraction'  
 'data'         : video file  
+
+For sample representation see the json file attached.
 
 successful POST requests will receive a 201 (created) response with a pointer to the newly stored data's location. 
 

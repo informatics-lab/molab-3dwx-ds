@@ -1,0 +1,22 @@
+{
+  "_links": {
+    "self": {
+      "href": "http://{host}:{port}/molab-3dwx-ds/......../{UUID}"
+    },
+    "data": {
+      "href": "http://{host}:{port}/molab-3dwx-ds/......../{UUID}/data"
+    }
+  },
+  "model_run_dt": "2015-01-01T00:00:00.000Z",
+  "forecast_dt": "2015-01-01T00:00:00.000Z",
+  "phenomenon": "cloud_fraction_in_a_layer",
+  "resolution": {
+    "x": 4096,
+    "y": 4096
+  },
+  "data_dimensions": {
+    "x": 632,
+    "y": 812,
+    "z": 70
+  }
+}
