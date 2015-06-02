@@ -32,11 +32,11 @@ public class ForecastReferenceTimeController extends BaseHalController {
                                            UriResolver uriResolver,
                                            MediaService mediaService,
                                            @PathParam(ModelController.MODEL) String model,
-                                           @PathParam(FORECAST_REFERENCE_TIME) String forecastReferenceTime) {
+                                           @PathParam(FORECAST_REFERENCE_TIME) DateTime forecastReferenceTime) {
         super(representationFactory, uriResolver);
         this.mediaService = mediaService;
         this.model = model;
-        this.forecastReferenceTime = new DateTime(forecastReferenceTime);
+        this.forecastReferenceTime = forecastReferenceTime;
     }
 
     @GET

@@ -33,12 +33,12 @@ public class PhenomenonController extends BaseHalController {
                                 UriResolver uriResolver,
                                 MediaService mediaService,
                                 @PathParam(ModelController.MODEL) String model,
-                                @PathParam(ForecastReferenceTimeController.FORECAST_REFERENCE_TIME) String forecastReferenceTime,
+                                @PathParam(ForecastReferenceTimeController.FORECAST_REFERENCE_TIME) DateTime forecastReferenceTime,
                                 @PathParam(PHENOMENON) String phenomenon) {
         super(representationFactory, uriResolver);
         this.mediaService = mediaService;
         this.model = model;
-        this.forecastReferenceTime = new DateTime(forecastReferenceTime);
+        this.forecastReferenceTime = forecastReferenceTime;
         this.phenomenon = phenomenon;
     }
 
