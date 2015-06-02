@@ -18,6 +18,9 @@ public interface VideoRepository extends MongoRepository<Video, String>, QueryDs
     Video findVideoMetaById(String id);
 
     @Query(value = "{}", fields = "{ 'data' : 0 }")
+    Video findFirstVideoMetaByModelOrderByForecastReferenceTimeDesc(String Model);
+
+    @Query(value = "{}", fields = "{ 'data' : 0 }")
     Iterable<Video> findAllVideoMeta();
 
     @Query(value = "{}", fields = "{ 'data' : 0 }")

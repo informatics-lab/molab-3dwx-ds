@@ -13,6 +13,9 @@ import uk.co.informaticslab.molab3dwxds.domain.Image;
 public interface ImageRepository extends MongoRepository<Image, String>, QueryDslPredicateExecutor<Image> {
 
     @Query(value = "{}", fields = "{ 'data' : 0 }")
+    Image findFirstImageMetaByModelOrderByForecastReferenceTimeDesc(String Model);
+
+    @Query(value = "{}", fields = "{ 'data' : 0 }")
     Image findImageMetaById(String id);
 
     @Query(value = "{}", fields = "{ 'data' : 0 }")
@@ -25,5 +28,6 @@ public interface ImageRepository extends MongoRepository<Image, String>, QueryDs
     Iterable<Image> findAllImageMetaByPredicate(Predicate predicate);
 
     int countByModelAndForecastReferenceTimeAndPhenomenon(String model, DateTime forecastReferenceTime, String phenomenon);
+
 
 }

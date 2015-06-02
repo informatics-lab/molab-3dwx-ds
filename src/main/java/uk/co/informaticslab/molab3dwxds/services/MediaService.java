@@ -34,4 +34,6 @@ public interface MediaService {
 
     Iterable<Video> getVideosByFilter(String model, DateTime forecastReferenceTime, String phenomenon);
 
+    Optional<DateTime> getLatestForecastReferenceTime(String model);
+
 }

@@ -44,4 +44,20 @@ public class UriResolver {
         sb.deleteCharAt(sb.lastIndexOf("/"));
         return URI.create(sb.toString());
     }
+
+    public URI appendToSelf(URI self, Object... paths) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(self);
+        sb.append("/");
+        for (Object path : paths) {
+            if (path instanceof DateTime) {
+                sb.append(DTF.print((DateTime) path));
+            } else {
+                sb.append(path.toString());
+            }
+            sb.append("/");
+        }
+        sb.deleteCharAt(sb.lastIndexOf("/"));
+        return URI.create(sb.toString());
+    }
 }

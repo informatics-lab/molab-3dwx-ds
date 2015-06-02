@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import java.net.URI;
 
 /**
- * Created by tom on 15/05/2015.
+ * Root controller for the API
  */
 @Path("/")
 public class RootController extends BaseHalController {

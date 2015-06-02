@@ -1,0 +1,142 @@
+http://{host}:{port}/molab-3dwx-ds/
+{
+ _links : {
+   self : {
+     href : "http://{host}:{port}/molab-3dwx-ds/"
+   },
+   models : {
+     href : "http://{host}:{port}/molab-3dwx-ds/models"
+   },
+   media : {
+     href : "http://{host}:{port}/molab-3dwx-ds/media"
+   }
+ }
+}
+
+
+http://{host}:{port}/molab-3dwx-ds/models
+{
+ _links : {
+   self : {
+     href : "http://{host}:{port}/molab-3dwx-ds/models"
+   },
+   uk_v : {
+     href : "http://{host}:{port}/molab-3dwx-ds/models/uk_v"
+   }
+ }
+}
+
+
+http://{host}:{port}/molab-3dwx-ds/models/uk_v
+{
+ _links : {
+   self : {
+     href : "http://{host}:{port}/molab-3dwx-ds/models/uk_v"
+   },
+   get_by_forecast_reference_time : {
+     href : "http://{host}:{port}/molab-3dwx-ds/models/uk_v{/forecast_reference_time}",
+     templated : true
+   },
+   latest : {
+     href : "http://{host}:{port}/molab-3dwx-ds/models/uk_v/2015-01-01T00:00:00.000Z"
+   }
+ },
+ forecast_reference_times : [
+   "2015-01-01T00:00:00.000Z"
+ ]
+}
+
+
+http://{host}:{port}/molab-3dwx-ds/models/uk_v/2015-01-01T00:00:00.000Z
+{
+ _links : {
+   self : {
+     href : "http://{host}:{port}/molab-3dwx-ds/models/uk_v/2015-01-01T00:00:00.000Z"
+   },
+   cloud_fraction_in_a_layer : {
+     href : "http://{host}:{port}/molab-3dwx-ds/models/uk_v/2015-01-01T00:00:00.000Z/cloud_fraction_in_a_layer"
+   }
+ }
+}
+
+
+http://{host}:{port}/molab-3dwx-ds/models/uk_v/2015-01-01T00:00:00.000Z/cloud_fraction_in_a_layer
+{
+ _links : {
+   self : {
+     href : "http://{host}:{port}/molab-3dwx-ds/models/uk_v/2015-01-01T00:00:00.000Z/cloud_fraction_in_a_layer"
+   },
+   images : {
+     href : "http://{host}:{port}/molab-3dwx-ds/models/uk_v/2015-01-01T00:00:00.000Z/cloud_fraction_in_a_layer/images",
+   },
+   videos : {
+     href : "http://{host}:{port}/molab-3dwx-ds/models/uk_v/2015-01-01T00:00:00.000Z/cloud_fraction_in_a_layer/videos",
+   }
+ }
+}
+
+
+http://{host}:{port}/molab-3dwx-ds/models/uk_v/2015-01-01T00:00:00.000Z/cloud_fraction_in_a_layer/images
+{
+ _links : {
+   self : {
+     href : "http://{host}:{port}/molab-3dwx-ds/models/uk_v/2015-01-01T00:00:00.000Z/cloud_fraction_in_a_layer/images"
+   },
+   get_by_filter : {
+     href : "http://{host}:{port}/molab-3dwx-ds/models/uk_v/2015-01-01T00:00:00.000Z/cloud_fraction_in_a_layer/images{?forecast_time_gt,forecast_time_gte,forecast_time_lt,forecast_time_lte}",
+     templated : true
+   }
+ },
+ _embedded : {
+   images : [
+      <IMAGE 1 (see sample-image.json)>
+      <IMAGE 2>
+   ]
+ }
+}
+
+http://{host}:{port}/molab-3dwx-ds/models/uk_v/2015-01-01T00:00:00.000Z/cloud_fraction_in_a_layer/videos
+{
+ _links : {
+   self : {
+     href : "http://{host}:{port}/molab-3dwx-ds/models/uk_v/2015-01-01T00:00:00.000Z/cloud_fraction_in_a_layer/videos"
+   },
+ },
+ _embedded : {
+   videos : [
+      <VIDEO 1 (see sample-video.json)>
+   ]
+ }
+}
+
+
+
+http://{host}:{port}/molab-3dwx-ds/media
+{
+ _links : {
+   self : {
+     href : "http://{host}:{port}/molab-3dwx-ds/media"
+   },
+   get_by_id : {
+     href : "http://{host}:{port}/molab-3dwx-ds/media{/id}",
+     templated : true
+   },
+   insert_media : {
+     href : http://{host}:{port}/molab-3dwx-ds/media
+   }
+ }
+}
+
+
+http://{host}:{port}/molab-3dwx-ds/media/jnjhbfjhsdbjhafjcfjs
+{
+ _links : {
+   self : {
+     href : "http://{host}:{port}/molab-3dwx-ds/media/jnjhbfjhsdbjhafjcfjs"
+   },
+   data : {
+     href : "http://{host}:{port}/molab-3dwx-ds/media/jnjhbfjhsdbjhafjcfjs/data"
+   }
+ },
+ <ALL PROPS>
+}

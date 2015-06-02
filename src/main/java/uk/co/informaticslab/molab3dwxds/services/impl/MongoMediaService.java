@@ -151,4 +151,24 @@ public class MongoMediaService implements MediaService {
         return videoRepository.findAllVideoMetaByModelAndForecastReferenceTimeAndPhenomenon(model, forecastReferenceTime, phenomenon);
     }
 
+    @Override
+    public Optional<DateTime> getLatestForecastReferenceTime(String model) {
+        Image latestImage = imageRepository.findFirstImageMetaByModelOrderByForecastReferenceTimeDesc(model);
+        Video latestVideo = videoRepository.findFirstVideoMetaByModelOrderByForecastReferenceTimeDesc(model);
+
+        if (latestImage != null && latestVideo != null) {
+            if (latestImage.getForecastReferenceTime().isAfter(latestVideo.getForecastReferenceTime())) {
+                return Optional.of(latestImage.getForecastReferenceTime());
+            } else {
+                return Optional.of(latestVideo.getForecastReferenceTime());
+            }
+        } else if (latestImage != null) {
+            return Optional.of(latestImage.getForecastReferenceTime());
+        } else if (latestVideo != null) {
+            return Optional.of(latestVideo.getForecastReferenceTime());
+        } else {
+            return Optional.empty();
+        }
+    }
+
 }

@@ -2,6 +2,7 @@ package uk.co.informaticslab.molab3dwxds.api.controllers;
 
 import com.theoryinpractise.halbuilder.api.Representation;
 import com.theoryinpractise.halbuilder.api.RepresentationFactory;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.co.informaticslab.molab3dwxds.api.representations.MyRepresentationFactory;
 import uk.co.informaticslab.molab3dwxds.api.utils.UriResolver;
@@ -13,6 +14,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.net.URI;
+import java.util.List;
+import java.util.Optional;
 
 import static uk.co.informaticslab.molab3dwxds.domain.Constants.FORECAST_REFERENCE_TIME;
 
@@ -46,8 +49,17 @@ public class ModelController extends BaseHalController {
     @Override
     public Representation getCapabilities() {
         Representation repr = representationFactory.newRepresentation(getSelf());
-        repr.withLink("get_by_forecast_reference_time", getSelf() + "{/" + FORECAST_REFERENCE_TIME + "}");
-        repr.withProperty(FORECAST_REFERENCE_TIME + "s", mediaService.getForecastReferenceTimes(model));
+
+        Optional<DateTime> optional = mediaService.getLatestForecastReferenceTime(model);
+        if (optional.isPresent()) {
+            DateTime latest = optional.get();
+            repr.withLink("latest", uriResolver.appendToSelf(getSelf(), latest));
+        }
+        List<DateTime> forecastReferenceTimes = mediaService.getForecastReferenceTimes(model);
+        if (!forecastReferenceTimes.isEmpty()) {
+            repr.withLink("get_by_forecast_reference_time", getSelf() + "{/" + FORECAST_REFERENCE_TIME + "}");
+            repr.withProperty(FORECAST_REFERENCE_TIME + "s", forecastReferenceTimes);
+        }
         return repr;
     }
 

@@ -8,16 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.co.informaticslab.molab3dwxds.api.representations.MyRepresentationFactory;
 import uk.co.informaticslab.molab3dwxds.api.utils.UriResolver;
-import uk.co.informaticslab.molab3dwxds.domain.Constants;
 import uk.co.informaticslab.molab3dwxds.domain.Video;
 import uk.co.informaticslab.molab3dwxds.services.MediaService;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 
@@ -52,11 +49,11 @@ public class VideosController extends BaseHalController {
 
     @GET
     @Produces(RepresentationFactory.HAL_JSON)
-    public Response getVideosByFilter(@Context HttpServletRequest request) {
+    public Response getVideosByFilter() {
 
         Iterable<Video> videos = mediaService.getVideosByFilter(model, forecastReferenceTime, phenomenon);
 
-        Representation repr = representationFactory.newRepresentation(request.getRequestURI() + "?" + request.getQueryString());
+        Representation repr = getCapabilities();
         for (Video video : videos) {
             repr.withRepresentation(VIDEOS, representationFactory.getVideoAsRepresentation(uriResolver.mkUri(MediaController.MEDIA), video));
         }
@@ -66,7 +63,6 @@ public class VideosController extends BaseHalController {
     @Override
     public Representation getCapabilities() {
         Representation repr = representationFactory.newRepresentation(getSelf());
-        repr.withLink("get_videos_by_filter", getSelf() + "{?" + Constants.PHENOMENON + "}");
         return repr;
     }
 

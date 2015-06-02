@@ -74,7 +74,7 @@ public class ImagesController extends BaseHalController {
     @Override
     public Representation getCapabilities() {
         Representation repr = representationFactory.newRepresentation(getSelf());
-        repr.withLink("get_images_by_filter", buildFilterURI());
+        repr.withLink("get_by_filter", buildFilterURI());
         return repr;
     }
 
