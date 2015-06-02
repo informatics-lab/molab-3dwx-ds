@@ -45,10 +45,10 @@ further information on API structure can be seen in the 'api-structure.txt' file
 POST images to {root uri}/media with the following fields:  
 'forecast_reference_time' : date time of model run eg. '2015-01-01T00:00:00.000Z'  
 'forecast_time'           : date time of forecast eg. '2015-01-01T00:00:00.000Z'  
-'phenomenon'              : phenomenon that image represents eg. 'cloud_fraction'  
-'data'                    : image file
-'mime_type'               : mime type of file eg. 'image/png'
-'model'                   : name of model eg. 'uk_v'
+'phenomenon'              : phenomenon that image represents eg. 'cloud_fraction_in_a_layer'  
+'data'                    : image file  
+'mime_type'               : mime type of file eg. 'image/png'  
+'model'                   : name of model eg. 'uk_v'  
 
 
 For sample representation see the json file attached.
@@ -56,10 +56,10 @@ For sample representation see the json file attached.
 #### Videos
 POST videos to {root uri}/media with the following fields:  
 'forecast_reference_time' : date time of model run eg. '2015-01-01T00:00:00.000Z'  
-'phenomenon'              : phenomenon that video represents eg. 'cloud_fraction'  
-'data'                    : image file
-'mime_type'               : mime type of file eg. 'video/ogg'
-'model'                   : name of model eg. 'uk_v'
+'phenomenon'              : phenomenon that video represents eg. 'cloud_fraction_in_a_layer'  
+'data'                    : image file  
+'mime_type'               : mime type of file eg. 'video/ogg'  
+'model'                   : name of model eg. 'uk_v'  
 
 For sample representation see the json file attached.
 
