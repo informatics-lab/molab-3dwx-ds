@@ -1,5 +1,7 @@
 package uk.co.informaticslab.molab3dwxds.domain;
 
+import org.springframework.data.annotation.Id;
+
 import java.util.Arrays;
 
 /**
@@ -7,9 +9,8 @@ import java.util.Arrays;
  */
 public abstract class Media {
 
-    public static final String DATA = "data";
-    public static final String RESOLUTION = "resolution";
-    public static final String MIME_TYPE = "mime_type";
+    @Id
+    private String id;
 
     private byte[] data;
     private String mimeType;
@@ -22,6 +23,10 @@ public abstract class Media {
         this.data = data;
         this.mimeType = mimeType;
         this.resolution = resolution;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public byte[] getData() {
@@ -43,7 +48,8 @@ public abstract class Media {
     @Override
     public String toString() {
         return "Media{" +
-                "data=" + Arrays.toString(data) +
+                "id='" + id + '\'' +
+                ", data=" + Arrays.toString(data) +
                 ", mimeType='" + mimeType + '\'' +
                 ", resolution=" + resolution +
                 '}';

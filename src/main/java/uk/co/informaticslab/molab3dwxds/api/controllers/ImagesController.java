@@ -1,200 +1,98 @@
 package uk.co.informaticslab.molab3dwxds.api.controllers;
 
-import com.google.common.io.ByteStreams;
 import com.theoryinpractise.halbuilder.api.Representation;
 import com.theoryinpractise.halbuilder.api.RepresentationFactory;
-import org.apache.tika.Tika;
-import org.glassfish.jersey.media.multipart.FormDataBodyPart;
-import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import uk.co.informaticslab.molab3dwxds.api.caching.utils.CacheControlUtils;
 import uk.co.informaticslab.molab3dwxds.api.params.DTRange;
-import uk.co.informaticslab.molab3dwxds.api.params.ForecastDTRange;
-import uk.co.informaticslab.molab3dwxds.api.params.ModelRunDTRange;
+import uk.co.informaticslab.molab3dwxds.api.params.ForecastTimeRange;
+import uk.co.informaticslab.molab3dwxds.api.representations.MyRepresentationFactory;
 import uk.co.informaticslab.molab3dwxds.api.utils.UriResolver;
-import uk.co.informaticslab.molab3dwxds.domain.DataDimensions;
+import uk.co.informaticslab.molab3dwxds.domain.Constants;
 import uk.co.informaticslab.molab3dwxds.domain.Image;
-import uk.co.informaticslab.molab3dwxds.domain.Phenomenon;
-import uk.co.informaticslab.molab3dwxds.domain.Resolution;
-import uk.co.informaticslab.molab3dwxds.services.ImageService;
+import uk.co.informaticslab.molab3dwxds.services.MediaService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.InputStream;
 import java.net.URI;
-
-import static uk.co.informaticslab.molab3dwxds.domain.Image.*;
 
 /**
  * Controller class for the images endpoint
  */
-@Path(ImagesController.IMAGES)
-public class ImagesController {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ImagesController.class);
-    private static final Tika TIKA = new Tika();
+@Path(ModelsController.MODELS + "/{" + ModelController.MODEL + "}/{" + ForecastReferenceTimeController.FORECAST_REFERENCE_TIME + "}/" + ImagesController.IMAGES)
+public class ImagesController extends BaseHalController {
 
     public static final String IMAGES = "images";
 
-    private final ImageService imageService;
-    private final RepresentationFactory representationFactory;
-    private final UriResolver uriResolver;
+    private static final Logger LOG = LoggerFactory.getLogger(ImagesController.class);
+
+    private final MediaService mediaService;
+    private final String model;
+    private final DateTime forecastReferenceTime;
 
     @Autowired
-    public ImagesController(ImageService imageService, RepresentationFactory representationFactory, UriResolver uriResolver) {
-        this.imageService = imageService;
-        this.representationFactory = representationFactory;
-        this.uriResolver = uriResolver;
+    public ImagesController(MyRepresentationFactory representationFactory,
+                            UriResolver uriResolver,
+                            MediaService mediaService,
+                            @PathParam(ModelController.MODEL) String model,
+                            @PathParam(ForecastReferenceTimeController.FORECAST_REFERENCE_TIME) String forecastReferenceTime) {
+        super(representationFactory, uriResolver);
+        this.mediaService = mediaService;
+        this.model = model;
+        this.forecastReferenceTime = new DateTime(forecastReferenceTime);
     }
-
-    /**
-     * Inserts the image along with it's metadata into the repository
-     *
-     * @param form submitted form containing image data and metadata
-     * @return Created response pointing to newly accessible image
-     */
-    @POST
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response insertImage(FormDataMultiPart form) {
-        LOG.debug("Image posted to endpoint...");
-
-        DateTime modelRunDT;
-        DateTime forecastDT;
-        Phenomenon phenomenon;
-        byte[] data;
-        String mimeType;
-
-        try {
-            modelRunDT = new DateTime(form.getField(MODEL_RUN_DT).getValue());
-            forecastDT = new DateTime(form.getField(FORECAST_DT).getValue());
-            phenomenon = Phenomenon.valueOf(form.getField(PHENOMENON).getValue().toLowerCase());
-            FormDataBodyPart bodyPart = form.getField(DATA);
-            data = ByteStreams.toByteArray(bodyPart.getValueAs(InputStream.class));
-            mimeType = TIKA.detect(data);
-        } catch (Exception e) {
-            LOG.error("Error reading multipart form data", e);
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
-        }
-
-        Image image = new Image(data, mimeType, Resolution.asDefault(), modelRunDT, forecastDT, phenomenon, DataDimensions.asDefault());
-
-        Image respImage = imageService.insert(image);
-        LOG.debug("Image inserted successfully...");
-        return Response.created(URI.create(getSelf() + "/" + respImage.getId())).build();
-
-    }
-
-    /**
-     * Gets the image metadata
-     *
-     * @param id the unique id of the image
-     * @return OK response with HAL image representation
-     */
-    @Path("/{" + ID + "}")
-    @GET
-    @Produces(RepresentationFactory.HAL_JSON)
-    public Response getImageById(@PathParam(ID) String id) {
-        Image image = imageService.getById(id, false);
-        Representation repr = getImageAsRepresentation(image);
-        return Response.ok(repr).build();
-    }
-
-    /**
-     * Gets the actual image data and renders it in the browser as a png
-     *
-     * @param id the unique id of the image
-     * @return OK response with image data as the entity body
-     */
-    @Path("/{" + ID + "}/data")
-    @GET
-    public Response getImageDataById(@PathParam(ID) String id) {
-        Image image = imageService.getById(id, true);
-        return Response.ok(image.getData())
-                .type(image.getMimeType())
-                .cacheControl(CacheControlUtils.permanent())
-                .build();
-    }
-
-
-    /*
-     * Disabled for now until proper user auth is enabled.
-     */
-//    @Path("/{" + ID + "}")
-//    @DELETE
-//    public Response deleteImageById(@PathParam(ID) String id) {
-//        imageService.delete(id);
-//        return Response.noContent().build();
-//    }
 
     @GET
     @Produces(RepresentationFactory.HAL_JSON)
-    public Response getImagesByFilter(@Context HttpServletRequest request,
-                                      @QueryParam(PHENOMENON) Phenomenon phenomenon,
-                                      @BeanParam ModelRunDTRange modelRunDTRange,
-                                      @BeanParam ForecastDTRange forecastDTRange) {
+    public Response get(@Context HttpServletRequest request,
+                        @QueryParam(Constants.PHENOMENON) String phenomenon,
+                        @BeanParam ForecastTimeRange forecastTimeRange) {
 
-        if (phenomenon == null && !modelRunDTRange.isDateRangeSet() && !forecastDTRange.isDateRangeSet()) {
+        if (phenomenon == null && !forecastTimeRange.isDateRangeSet()) {
             //return the default resource capabilities
-            return Response.ok(getResourceCapabilities()).build();
+            return Response.ok(getCapabilities()).build();
         }
 
-        LOG.debug("{} = {}", PHENOMENON, phenomenon);
-        LOG.debug("{} = {}", MODEL_RUN_DT, modelRunDTRange);
-        LOG.debug("{} = {}", FORECAST_DT, forecastDTRange);
+        LOG.debug("{} = {}", Constants.PHENOMENON, phenomenon);
+        LOG.debug("{} = {}", Constants.FORECAST_TIME, forecastTimeRange);
 
-        Iterable<Image> images = imageService.getByFilter(phenomenon, modelRunDTRange, forecastDTRange);
+        Iterable<Image> images = mediaService.getImagesByFilter(phenomenon, forecastTimeRange);
 
         Representation repr = representationFactory.newRepresentation(request.getRequestURI() + "?" + request.getQueryString());
         for (Image image : images) {
-            repr.withRepresentation(IMAGES, getImageAsRepresentation(image));
+            repr.withRepresentation(IMAGES, representationFactory.getImageAsRepresentation(uriResolver.mkUri(MediaController.MEDIA), image));
         }
         return Response.ok(repr).build();
     }
 
-    public Representation getResourceCapabilities() {
+
+    @Override
+    public Representation getCapabilities() {
         Representation repr = representationFactory.newRepresentation(getSelf());
-        repr.withLink("save_image", getSelf());
-        repr.withLink("get_image_by_id", getSelf() + "{/" + ID + "}");
-//        repr.withLink("delete-image-by-id", Application.BASE_URI + IMAGES + "{/" + ID + "}");
         repr.withLink("get_images_by_filter", buildFilterURI());
         return repr;
+    }
+
+    @Override
+    public URI getSelf() {
+        return uriResolver.mkUri(ModelsController.MODELS, model, forecastReferenceTime, IMAGES);
     }
 
     private String buildFilterURI() {
         return new StringBuilder()
                 .append(getSelf())
                 .append("{?")
-                .append(PHENOMENON)
-                .append("," + MODEL_RUN_DT + "_" + DTRange.GT)
-                .append("," + MODEL_RUN_DT + "_" + DTRange.GTE)
-                .append("," + MODEL_RUN_DT + "_" + DTRange.LT)
-                .append("," + MODEL_RUN_DT + "_" + DTRange.LTE)
-                .append("," + FORECAST_DT + "_" + DTRange.GT)
-                .append("," + FORECAST_DT + "_" + DTRange.GTE)
-                .append("," + FORECAST_DT + "_" + DTRange.LT)
-                .append("," + FORECAST_DT + "_" + DTRange.LTE)
+                .append(Constants.PHENOMENON)
+                .append("," + Constants.FORECAST_TIME + "_" + DTRange.GT)
+                .append("," + Constants.FORECAST_TIME + "_" + DTRange.GTE)
+                .append("," + Constants.FORECAST_TIME + "_" + DTRange.LT)
+                .append("," + Constants.FORECAST_TIME + "_" + DTRange.LTE)
                 .append("}")
                 .toString();
-    }
-
-    private Representation getImageAsRepresentation(Image image) {
-        String selfHref = getSelf() + "/" + image.getId();
-        Representation repr = representationFactory.newRepresentation(selfHref);
-        repr.withLink(Image.DATA, selfHref + "/data");
-        repr.withProperty(Image.MODEL_RUN_DT, image.getModelRunDT());
-        repr.withProperty(Image.FORECAST_DT, image.getForecastDT());
-        repr.withProperty(Image.PHENOMENON, image.getPhenomenon());
-        return repr;
-    }
-
-    public URI getSelf() {
-        return uriResolver.mkUriForClass(ImagesController.class);
     }
 
 }

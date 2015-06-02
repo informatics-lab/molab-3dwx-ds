@@ -1,10 +1,10 @@
 package uk.co.informaticslab.molab3dwxds.services.repositories;
 
 import com.mysema.query.types.Predicate;
+import org.joda.time.DateTime;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.querydsl.QueryDslPredicateExecutor;
-import uk.co.informaticslab.molab3dwxds.domain.Phenomenon;
 import uk.co.informaticslab.molab3dwxds.domain.Video;
 
 /**
@@ -15,15 +15,23 @@ import uk.co.informaticslab.molab3dwxds.domain.Video;
 public interface VideoRepository extends MongoRepository<Video, String>, QueryDslPredicateExecutor<Video> {
 
     @Query(value = "{}", fields = "{ 'data' : 0 }")
-    Iterable<Video> findAllVideoMeta(Predicate predicate);
+    Video findVideoMetaById(String id);
 
     @Query(value = "{}", fields = "{ 'data' : 0 }")
-    Video findVideoMetaById(String id);
+    Iterable<Video> findAllVideoMeta();
+
+    @Query(value = "{}", fields = "{ 'data' : 0 }")
+    Iterable<Video> findAllVideoMetaByPredicate(Predicate predicate);
+
+    @Query(value = "{}", fields = "{ 'data' : 0 }")
+    Iterable<Video> findAllVideoMetaByPhenomenon(String phenomenon);
 
     @Query(value = "{}", fields = "{ 'data' : 0 }")
     Video findFirstVideoMetaByOrderByModelRunDTDesc();
 
     @Query(value = "{}", fields = "{ 'data' : 0 }")
-    Video findFirstVideoMetaByPhenomenonOrderByModelRunDTDesc(Phenomenon phenomenon);
+    Video findFirstVideoMetaByPhenomenonOrderByModelRunDTDesc(String phenomenon);
+
+    int countByModelAndForecastReferenceTime(String model, DateTime forecastReferenceTime);
 
 }

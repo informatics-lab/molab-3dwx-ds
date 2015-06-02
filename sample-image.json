@@ -7,9 +7,10 @@
       "href": "http://{host}:{port}/molab-3dwx-ds/......../{UUID}/data"
     }
   },
-  "model_run_dt": "2015-01-01T00:00:00.000Z",
-  "forecast_dt": "2015-01-01T00:00:00.000Z",
+  "forecast_reference_time": "2015-01-01T00:00:00.000Z",
+  "forecast_time": "2015-01-01T00:00:00.000Z",
   "phenomenon": "cloud_fraction_in_a_layer",
+  "model": "uk_v",
   "resolution": {
     "x": 4096,
     "y": 4096
