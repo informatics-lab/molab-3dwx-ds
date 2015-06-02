@@ -16,11 +16,13 @@ public interface MediaService {
 
     List<String> getModels();
 
+    List<String> getPhenomenons(String model, DateTime forecastReferenceTime);
+
     List<DateTime> getForecastReferenceTimes(String model);
 
-    int countImages(String model, DateTime forecastReferenceTime);
+    int countImages(String model, DateTime forecastReferenceTime, String Phenomenon);
 
-    int countVideos(String model, DateTime forecastReferenceTime);
+    int countVideos(String model, DateTime forecastReferenceTime, String Phenomenon);
 
     Optional<? extends Media> insert(Media media);
 
@@ -28,8 +30,8 @@ public interface MediaService {
 
     void deleteById(String id);
 
-    Iterable<Image> getImagesByFilter(String phenomenon, ForecastTimeRange forecastTimeRange);
+    Iterable<Image> getImagesByFilter(String model, DateTime forecastReferenceTime, String phenomenon, ForecastTimeRange forecastTimeRange);
 
-    Iterable<Video> getVideosByFilter(String phenomenon);
+    Iterable<Video> getVideosByFilter(String model, DateTime forecastReferenceTime, String phenomenon);
 
 }

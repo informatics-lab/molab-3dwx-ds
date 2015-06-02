@@ -24,7 +24,10 @@ public interface VideoRepository extends MongoRepository<Video, String>, QueryDs
     Iterable<Video> findAllVideoMetaByPredicate(Predicate predicate);
 
     @Query(value = "{}", fields = "{ 'data' : 0 }")
-    Iterable<Video> findAllVideoMetaByPhenomenon(String phenomenon);
+    Iterable<Video> findAllVideoMetaByModelAndForecastReferenceTime(String model, DateTime forecastReferenceTime);
+
+    @Query(value = "{}", fields = "{ 'data' : 0 }")
+    Iterable<Video> findAllVideoMetaByModelAndForecastReferenceTimeAndPhenomenon(String model, DateTime forecastReferenceTime, String phenomenon);
 
     @Query(value = "{}", fields = "{ 'data' : 0 }")
     Video findFirstVideoMetaByOrderByModelRunDTDesc();
@@ -32,6 +35,6 @@ public interface VideoRepository extends MongoRepository<Video, String>, QueryDs
     @Query(value = "{}", fields = "{ 'data' : 0 }")
     Video findFirstVideoMetaByPhenomenonOrderByModelRunDTDesc(String phenomenon);
 
-    int countByModelAndForecastReferenceTime(String model, DateTime forecastReferenceTime);
+    int countByModelAndForecastReferenceTimeAndPhenomenon(String model, DateTime forecastReferenceTime, String phenomenon);
 
 }

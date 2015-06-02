@@ -16,10 +16,14 @@ import java.util.List;
  */
 public class ImagePredicateBuilder extends DTRangePredicateBuilder {
 
+    private final String model;
+    private final DateTime forecastReferenceTime;
     private final String phenomenon;
     private final ForecastTimeRange forecastTimeRange;
 
-    public ImagePredicateBuilder(String phenomenon, ForecastTimeRange forecastTimeRange) {
+    public ImagePredicateBuilder(String model, DateTime forecastReferenceTime, String phenomenon, ForecastTimeRange forecastTimeRange) {
+        this.model = model;
+        this.forecastReferenceTime = forecastReferenceTime;
         this.phenomenon = phenomenon;
         this.forecastTimeRange = forecastTimeRange;
     }
@@ -27,6 +31,14 @@ public class ImagePredicateBuilder extends DTRangePredicateBuilder {
     public Predicate buildPredicate() {
 
         List<BooleanExpression> booleanExpressions = new ArrayList<>();
+
+        if (model != null) {
+            booleanExpressions.add(createModelExpression(model));
+        }
+
+        if (forecastReferenceTime != null) {
+            booleanExpressions.add(createForecastReferenceTimeExpression(forecastReferenceTime));
+        }
 
         if (phenomenon != null) {
             booleanExpressions.add(createPhenomenonExpression(phenomenon));
@@ -37,6 +49,14 @@ public class ImagePredicateBuilder extends DTRangePredicateBuilder {
         }
 
         return BooleanExpression.allOf(booleanExpressions.toArray(new BooleanExpression[0]));
+    }
+
+    private BooleanExpression createModelExpression(String model) {
+        return QImage.image.model.eq(model);
+    }
+
+    private BooleanExpression createForecastReferenceTimeExpression(DateTime forecastReferenceTime) {
+        return QImage.image.forecastReferenceTime.eq(forecastReferenceTime);
     }
 
     private BooleanExpression createPhenomenonExpression(String phenomenon) {

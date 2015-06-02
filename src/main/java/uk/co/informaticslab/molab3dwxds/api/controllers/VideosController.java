@@ -13,7 +13,10 @@ import uk.co.informaticslab.molab3dwxds.domain.Video;
 import uk.co.informaticslab.molab3dwxds.services.MediaService;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.net.URI;
@@ -21,7 +24,7 @@ import java.net.URI;
 /**
  * Controller class for the videos endpoint
  */
-@Path(ModelsController.MODELS + "/{" + ModelController.MODEL + "}/{" + ForecastReferenceTimeController.FORECAST_REFERENCE_TIME + "}/" + VideosController.VIDEOS)
+@Path(ModelsController.MODELS + "/{" + ModelController.MODEL + "}/{" + ForecastReferenceTimeController.FORECAST_REFERENCE_TIME + "}/{" + PhenomenonController.PHENOMENON + "}/" + VideosController.VIDEOS)
 public class VideosController extends BaseHalController {
 
     public static final String VIDEOS = "videos";
@@ -31,31 +34,27 @@ public class VideosController extends BaseHalController {
     private final MediaService mediaService;
     private final String model;
     private final DateTime forecastReferenceTime;
+    private final String phenomenon;
 
     @Autowired
     public VideosController(MyRepresentationFactory representationFactory,
                             UriResolver uriResolver,
                             MediaService mediaService,
                             @PathParam(ModelController.MODEL) String model,
-                            @PathParam(ForecastReferenceTimeController.FORECAST_REFERENCE_TIME) String forecastReferenceTime) {
+                            @PathParam(ForecastReferenceTimeController.FORECAST_REFERENCE_TIME) String forecastReferenceTime,
+                            @PathParam(PhenomenonController.PHENOMENON) String phenomenon) {
         super(representationFactory, uriResolver);
         this.mediaService = mediaService;
         this.model = model;
         this.forecastReferenceTime = new DateTime(forecastReferenceTime);
+        this.phenomenon = phenomenon;
     }
 
     @GET
     @Produces(RepresentationFactory.HAL_JSON)
-    public Response getVideosByFilter(@Context HttpServletRequest request,
-                                      @QueryParam(Constants.PHENOMENON) String phenomenon) {
+    public Response getVideosByFilter(@Context HttpServletRequest request) {
 
-        if (phenomenon == null) {
-            return Response.ok(getCapabilities()).build();
-        }
-
-        LOG.debug("{} = {}", Constants.PHENOMENON, phenomenon);
-
-        Iterable<Video> videos = mediaService.getVideosByFilter(phenomenon);
+        Iterable<Video> videos = mediaService.getVideosByFilter(model, forecastReferenceTime, phenomenon);
 
         Representation repr = representationFactory.newRepresentation(request.getRequestURI() + "?" + request.getQueryString());
         for (Video video : videos) {

@@ -16,27 +16,30 @@ import javax.ws.rs.core.Response;
 import java.net.URI;
 
 /**
- * Created by tom on 29/05/2015.
+ * Created by tom on 02/06/2015.
  */
-@Path(ModelsController.MODELS + "/{" + ModelController.MODEL + "}/{" + ForecastReferenceTimeController.FORECAST_REFERENCE_TIME + "}")
-public class ForecastReferenceTimeController extends BaseHalController {
+@Path(ModelsController.MODELS + "/{" + ModelController.MODEL + "}/{" + ForecastReferenceTimeController.FORECAST_REFERENCE_TIME + "}/{" + PhenomenonController.PHENOMENON + "}")
+public class PhenomenonController extends BaseHalController {
 
-    public static final String FORECAST_REFERENCE_TIME = "forecast_reference_time";
+    public static final String PHENOMENON = "phenomenon";
 
     private final MediaService mediaService;
     private final String model;
     private final DateTime forecastReferenceTime;
+    private final String phenomenon;
 
     @Autowired
-    public ForecastReferenceTimeController(MyRepresentationFactory representationFactory,
-                                           UriResolver uriResolver,
-                                           MediaService mediaService,
-                                           @PathParam(ModelController.MODEL) String model,
-                                           @PathParam(FORECAST_REFERENCE_TIME) String forecastReferenceTime) {
+    public PhenomenonController(MyRepresentationFactory representationFactory,
+                                UriResolver uriResolver,
+                                MediaService mediaService,
+                                @PathParam(ModelController.MODEL) String model,
+                                @PathParam(ForecastReferenceTimeController.FORECAST_REFERENCE_TIME) String forecastReferenceTime,
+                                @PathParam(PHENOMENON) String phenomenon) {
         super(representationFactory, uriResolver);
         this.mediaService = mediaService;
         this.model = model;
         this.forecastReferenceTime = new DateTime(forecastReferenceTime);
+        this.phenomenon = phenomenon;
     }
 
     @GET
@@ -48,15 +51,19 @@ public class ForecastReferenceTimeController extends BaseHalController {
     @Override
     public Representation getCapabilities() {
         Representation repr = representationFactory.newRepresentation(getSelf());
-        for (String phenomenon : mediaService.getPhenomenons(model, forecastReferenceTime)) {
-            repr.withLink(phenomenon, getSelf() + "/" + phenomenon);
+        if (mediaService.countImages(model, forecastReferenceTime, phenomenon) > 0) {
+            repr.withLink("images", getSelf() + "/images");
+        }
+        if (mediaService.countVideos(model, forecastReferenceTime, phenomenon) > 0) {
+            repr.withLink("videos", getSelf() + "/videos");
         }
         return repr;
     }
 
     @Override
     public URI getSelf() {
-        return uriResolver.mkUri(ModelsController.MODELS, model, forecastReferenceTime);
+        return uriResolver.mkUri(ModelsController.MODELS, model, forecastReferenceTime, phenomenon);
     }
 
 }
+

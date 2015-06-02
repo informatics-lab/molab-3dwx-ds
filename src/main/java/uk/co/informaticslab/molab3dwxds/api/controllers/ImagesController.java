@@ -23,7 +23,7 @@ import java.net.URI;
 /**
  * Controller class for the images endpoint
  */
-@Path(ModelsController.MODELS + "/{" + ModelController.MODEL + "}/{" + ForecastReferenceTimeController.FORECAST_REFERENCE_TIME + "}/" + ImagesController.IMAGES)
+@Path(ModelsController.MODELS + "/{" + ModelController.MODEL + "}/{" + ForecastReferenceTimeController.FORECAST_REFERENCE_TIME + "}/{" + PhenomenonController.PHENOMENON + "}/" + ImagesController.IMAGES)
 public class ImagesController extends BaseHalController {
 
     public static final String IMAGES = "images";
@@ -33,36 +33,37 @@ public class ImagesController extends BaseHalController {
     private final MediaService mediaService;
     private final String model;
     private final DateTime forecastReferenceTime;
+    private final String phenomenon;
 
     @Autowired
     public ImagesController(MyRepresentationFactory representationFactory,
                             UriResolver uriResolver,
                             MediaService mediaService,
                             @PathParam(ModelController.MODEL) String model,
-                            @PathParam(ForecastReferenceTimeController.FORECAST_REFERENCE_TIME) String forecastReferenceTime) {
+                            @PathParam(ForecastReferenceTimeController.FORECAST_REFERENCE_TIME) String forecastReferenceTime,
+                            @PathParam(PhenomenonController.PHENOMENON) String phenomenon) {
         super(representationFactory, uriResolver);
         this.mediaService = mediaService;
         this.model = model;
         this.forecastReferenceTime = new DateTime(forecastReferenceTime);
+        this.phenomenon = phenomenon;
     }
 
     @GET
     @Produces(RepresentationFactory.HAL_JSON)
     public Response get(@Context HttpServletRequest request,
-                        @QueryParam(Constants.PHENOMENON) String phenomenon,
                         @BeanParam ForecastTimeRange forecastTimeRange) {
 
-        if (phenomenon == null && !forecastTimeRange.isDateRangeSet()) {
-            //return the default resource capabilities
-            return Response.ok(getCapabilities()).build();
-        }
-
-        LOG.debug("{} = {}", Constants.PHENOMENON, phenomenon);
         LOG.debug("{} = {}", Constants.FORECAST_TIME, forecastTimeRange);
 
-        Iterable<Image> images = mediaService.getImagesByFilter(phenomenon, forecastTimeRange);
+        Iterable<Image> images = mediaService.getImagesByFilter(model, forecastReferenceTime, phenomenon, forecastTimeRange);
 
-        Representation repr = representationFactory.newRepresentation(request.getRequestURI() + "?" + request.getQueryString());
+        Representation repr;
+        if (!forecastTimeRange.isDateRangeSet()) {
+            repr = getCapabilities();
+        } else {
+            repr = representationFactory.newRepresentation(request.getRequestURI() + "?" + request.getQueryString());
+        }
         for (Image image : images) {
             repr.withRepresentation(IMAGES, representationFactory.getImageAsRepresentation(uriResolver.mkUri(MediaController.MEDIA), image));
         }
@@ -86,8 +87,7 @@ public class ImagesController extends BaseHalController {
         return new StringBuilder()
                 .append(getSelf())
                 .append("{?")
-                .append(Constants.PHENOMENON)
-                .append("," + Constants.FORECAST_TIME + "_" + DTRange.GT)
+                .append(Constants.FORECAST_TIME + "_" + DTRange.GT)
                 .append("," + Constants.FORECAST_TIME + "_" + DTRange.GTE)
                 .append("," + Constants.FORECAST_TIME + "_" + DTRange.LT)
                 .append("," + Constants.FORECAST_TIME + "_" + DTRange.LTE)

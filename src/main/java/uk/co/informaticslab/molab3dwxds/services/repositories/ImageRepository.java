@@ -19,8 +19,11 @@ public interface ImageRepository extends MongoRepository<Image, String>, QueryDs
     Iterable<Image> findAllImageMeta();
 
     @Query(value = "{}", fields = "{ 'data' : 0 }")
+    Iterable<Image> findAllImageMetaByModelAndForecastReferenceTime(String model, DateTime forecastReferenceTime);
+
+    @Query(value = "{}", fields = "{ 'data' : 0 }")
     Iterable<Image> findAllImageMetaByPredicate(Predicate predicate);
 
-    int countByModelAndForecastReferenceTime(String model, DateTime forecastReferenceTime);
+    int countByModelAndForecastReferenceTimeAndPhenomenon(String model, DateTime forecastReferenceTime, String phenomenon);
 
 }

@@ -49,6 +49,22 @@ public class MongoMediaService implements MediaService {
     }
 
     @Override
+    public List<String> getPhenomenons(String model, DateTime forecastReferenceTime) {
+        final List<String> uniquePhenomenons = new ArrayList<>();
+        for (Image image : imageRepository.findAllImageMetaByModelAndForecastReferenceTime(model, forecastReferenceTime)) {
+            if (!uniquePhenomenons.contains(image.getPhenomenon())) {
+                uniquePhenomenons.add(image.getPhenomenon());
+            }
+        }
+        for (Video video : videoRepository.findAllVideoMetaByModelAndForecastReferenceTime(model, forecastReferenceTime)) {
+            if (!uniquePhenomenons.contains(video.getPhenomenon())) {
+                uniquePhenomenons.add(video.getPhenomenon());
+            }
+        }
+        return uniquePhenomenons;
+    }
+
+    @Override
     public List<DateTime> getForecastReferenceTimes(String model) {
 
         final List<DateTime> uniqueForecastReferenceTimes = new ArrayList<>();
@@ -69,13 +85,13 @@ public class MongoMediaService implements MediaService {
     }
 
     @Override
-    public int countImages(String model, DateTime forecastReferenceTime) {
-        return imageRepository.countByModelAndForecastReferenceTime(model, forecastReferenceTime);
+    public int countImages(String model, DateTime forecastReferenceTime, String phenomenon) {
+        return imageRepository.countByModelAndForecastReferenceTimeAndPhenomenon(model, forecastReferenceTime, phenomenon);
     }
 
     @Override
-    public int countVideos(String model, DateTime forecastReferenceTime) {
-        return videoRepository.countByModelAndForecastReferenceTime(model, forecastReferenceTime);
+    public int countVideos(String model, DateTime forecastReferenceTime, String phenomenon) {
+        return videoRepository.countByModelAndForecastReferenceTimeAndPhenomenon(model, forecastReferenceTime, phenomenon);
     }
 
     @Override
@@ -124,15 +140,15 @@ public class MongoMediaService implements MediaService {
     }
 
     @Override
-    public Iterable<Image> getImagesByFilter(String phenomenon, ForecastTimeRange forecastTimeRange) {
-        PredicateBuilder builder = new ImagePredicateBuilder(phenomenon, forecastTimeRange);
+    public Iterable<Image> getImagesByFilter(String model, DateTime forecastReferenceTime, String phenomenon, ForecastTimeRange forecastTimeRange) {
+        PredicateBuilder builder = new ImagePredicateBuilder(model, forecastReferenceTime, phenomenon, forecastTimeRange);
         Predicate predicate = builder.buildPredicate();
         return imageRepository.findAllImageMetaByPredicate(predicate);
     }
 
     @Override
-    public Iterable<Video> getVideosByFilter(String phenomenon) {
-        return videoRepository.findAllVideoMetaByPhenomenon(phenomenon);
+    public Iterable<Video> getVideosByFilter(String model, DateTime forecastReferenceTime, String phenomenon) {
+        return videoRepository.findAllVideoMetaByModelAndForecastReferenceTimeAndPhenomenon(model, forecastReferenceTime, phenomenon);
     }
 
 }
