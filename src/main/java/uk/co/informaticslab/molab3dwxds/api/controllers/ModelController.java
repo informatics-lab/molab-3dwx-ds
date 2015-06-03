@@ -3,6 +3,8 @@ package uk.co.informaticslab.molab3dwxds.api.controllers;
 import com.theoryinpractise.halbuilder.api.Representation;
 import com.theoryinpractise.halbuilder.api.RepresentationFactory;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.co.informaticslab.molab3dwxds.api.representations.MyRepresentationFactory;
 import uk.co.informaticslab.molab3dwxds.api.utils.UriResolver;
@@ -24,6 +26,8 @@ import static uk.co.informaticslab.molab3dwxds.domain.Constants.FORECAST_REFEREN
  */
 @Path(ModelsController.MODELS + "/{" + ModelController.MODEL + "}")
 public class ModelController extends BaseHalController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ModelController.class);
 
     public static final String MODEL = "model";
 

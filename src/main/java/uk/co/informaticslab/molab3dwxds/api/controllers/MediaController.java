@@ -110,15 +110,14 @@ public class MediaController extends BaseHalController {
             Media media = optional.get();
 
             if (range == null) {
-                return Response.ok(media.getData(), media.getMimeType())
-                        .cacheControl(CacheControlUtils.permanent())
-                        .build();
-            } else {
-                return MediaStreamingResponse.media(media)
-                        .range(range)
-                        .cacheControl(CacheControlUtils.permanent())
-                        .build();
+                range = ByteRange.from(0);
             }
+
+            return MediaStreamingResponse.media(media)
+                    .range(range)
+                    .cacheControl(CacheControlUtils.permanent())
+                    .build();
+
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
         }

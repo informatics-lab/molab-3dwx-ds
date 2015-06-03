@@ -2,7 +2,13 @@ package uk.co.informaticslab.molab3dwxds.services.impl;
 
 import com.mysema.query.types.Predicate;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import uk.co.informaticslab.molab3dwxds.api.params.ForecastTimeRange;
 import uk.co.informaticslab.molab3dwxds.domain.Image;
@@ -13,6 +19,7 @@ import uk.co.informaticslab.molab3dwxds.services.repositories.ImageRepository;
 import uk.co.informaticslab.molab3dwxds.services.repositories.VideoRepository;
 import uk.co.informaticslab.molab3dwxds.services.repositories.query.ImagePredicateBuilder;
 import uk.co.informaticslab.molab3dwxds.services.repositories.query.PredicateBuilder;
+import uk.co.informaticslab.molab3dwxds.services.repositories.query.VideoPredicateBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +28,10 @@ import java.util.Optional;
 
 @Service
 public class MongoMediaService implements MediaService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MongoMediaService.class);
+
+    private static final Pageable LATEST_FORECAST_REFERENCE_TIME = new PageRequest(0, 1, Sort.Direction.DESC, "forecastReferenceTime");
 
     private final ImageRepository imageRepository;
     private final VideoRepository videoRepository;
@@ -51,12 +62,14 @@ public class MongoMediaService implements MediaService {
     @Override
     public List<String> getPhenomenons(String model, DateTime forecastReferenceTime) {
         final List<String> uniquePhenomenons = new ArrayList<>();
-        for (Image image : imageRepository.findAllImageMetaByModelAndForecastReferenceTime(model, forecastReferenceTime)) {
+        ImagePredicateBuilder imagePredicateBuilder = new ImagePredicateBuilder(model, forecastReferenceTime, null, null);
+        for (Image image : imageRepository.findAllImageMeta(imagePredicateBuilder.buildPredicate())) {
             if (!uniquePhenomenons.contains(image.getPhenomenon())) {
                 uniquePhenomenons.add(image.getPhenomenon());
             }
         }
-        for (Video video : videoRepository.findAllVideoMetaByModelAndForecastReferenceTime(model, forecastReferenceTime)) {
+        VideoPredicateBuilder videoPredicateBuilder = new VideoPredicateBuilder(model, forecastReferenceTime, null);
+        for (Video video : videoRepository.findAll(videoPredicateBuilder.buildPredicate())) {
             if (!uniquePhenomenons.contains(video.getPhenomenon())) {
                 uniquePhenomenons.add(video.getPhenomenon());
             }
@@ -143,18 +156,37 @@ public class MongoMediaService implements MediaService {
     public Iterable<Image> getImagesByFilter(String model, DateTime forecastReferenceTime, String phenomenon, ForecastTimeRange forecastTimeRange) {
         PredicateBuilder builder = new ImagePredicateBuilder(model, forecastReferenceTime, phenomenon, forecastTimeRange);
         Predicate predicate = builder.buildPredicate();
-        return imageRepository.findAllImageMetaByPredicate(predicate);
+        return imageRepository.findAllImageMeta(predicate);
     }
 
     @Override
     public Iterable<Video> getVideosByFilter(String model, DateTime forecastReferenceTime, String phenomenon) {
+        LOG.debug("Getting videos for {}, {}, {}", model, forecastReferenceTime, phenomenon);
+        VideoPredicateBuilder videoPredicateBuilder = new VideoPredicateBuilder(model, forecastReferenceTime, phenomenon);
+//        return videoRepository.findAllVideoMetaByPredicate(videoPredicateBuilder.buildPredicate());
         return videoRepository.findAllVideoMetaByModelAndForecastReferenceTimeAndPhenomenon(model, forecastReferenceTime, phenomenon);
     }
 
     @Override
     public Optional<DateTime> getLatestForecastReferenceTime(String model) {
-        Image latestImage = imageRepository.findFirstImageMetaByModelOrderByForecastReferenceTimeDesc(model);
-        Video latestVideo = videoRepository.findFirstVideoMetaByModelOrderByForecastReferenceTimeDesc(model);
+        ImagePredicateBuilder imagePredicateBuilder = new ImagePredicateBuilder(model, null, null, null);
+        Page<Image> imagePage = imageRepository.findAllImageMeta(imagePredicateBuilder.buildPredicate(), LATEST_FORECAST_REFERENCE_TIME);
+
+        Image latestImage = null;
+        if (imagePage.getContent().size() == 1) {
+            latestImage = imagePage.getContent().get(0);
+        }
+
+        VideoPredicateBuilder videoPredicateBuilder = new VideoPredicateBuilder(model, null, null);
+        Page<Video> videoPage = videoRepository.findAllVideoMetaByPredicateWithPageable(videoPredicateBuilder.buildPredicate(), LATEST_FORECAST_REFERENCE_TIME);
+
+        Video latestVideo = null;
+        if (videoPage.getContent().size() == 1) {
+            latestVideo = videoPage.getContent().get(0);
+        }
+
+        LOG.debug("Latest image : {}", latestImage);
+        LOG.debug("Latest video : {}", latestVideo);
 
         if (latestImage != null && latestVideo != null) {
             if (latestImage.getForecastReferenceTime().isAfter(latestVideo.getForecastReferenceTime())) {

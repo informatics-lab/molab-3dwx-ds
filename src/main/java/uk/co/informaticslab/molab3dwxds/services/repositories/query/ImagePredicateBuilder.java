@@ -44,7 +44,7 @@ public class ImagePredicateBuilder extends DTRangePredicateBuilder {
             booleanExpressions.add(createPhenomenonExpression(phenomenon));
         }
 
-        if (forecastTimeRange.isDateRangeSet()) {
+        if (forecastTimeRange != null && forecastTimeRange.isDateRangeSet()) {
             booleanExpressions.add(createForecastTimeRangeExpression(forecastTimeRange));
         }
 
