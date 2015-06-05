@@ -7,17 +7,6 @@
         <format>zip</format>
     </formats>
 
-    <!-- put an empty log dir in the distribution -->
-    <fileSets>
-        <fileSet>
-            <directory>/src/assembly</directory>
-            <outputDirectory>/log</outputDirectory>
-            <excludes>
-                <exclude>**/*</exclude>
-            </excludes>
-        </fileSet>
-    </fileSets>
-
     <files>
         <!-- app props -->
         <file>
