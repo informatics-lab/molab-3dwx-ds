@@ -156,14 +156,12 @@ public class MongoMediaService implements MediaService {
     public Iterable<Image> getImagesByFilter(String model, DateTime forecastReferenceTime, String phenomenon, ForecastTimeRange forecastTimeRange) {
         PredicateBuilder builder = new ImagePredicateBuilder(model, forecastReferenceTime, phenomenon, forecastTimeRange);
         Predicate predicate = builder.buildPredicate();
-        return imageRepository.findAllImageMeta(predicate);
+        return imageRepository.findAll(predicate);
     }
 
     @Override
     public Iterable<Video> getVideosByFilter(String model, DateTime forecastReferenceTime, String phenomenon) {
         LOG.debug("Getting videos for {}, {}, {}", model, forecastReferenceTime, phenomenon);
-        VideoPredicateBuilder videoPredicateBuilder = new VideoPredicateBuilder(model, forecastReferenceTime, phenomenon);
-//        return videoRepository.findAllVideoMetaByPredicate(videoPredicateBuilder.buildPredicate());
         return videoRepository.findAllVideoMetaByModelAndForecastReferenceTimeAndPhenomenon(model, forecastReferenceTime, phenomenon);
     }
 
