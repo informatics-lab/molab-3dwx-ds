@@ -33,6 +33,7 @@ public class MediaController extends BaseHalController {
     public static final String MEDIA = "media";
 
     private static final Logger LOG = LoggerFactory.getLogger(MediaController.class);
+    public static final int MEGA_BYTES_12 = 1024 * 1024 * 12;
 
     private final MediaService mediaService;
 
@@ -126,18 +127,19 @@ public class MediaController extends BaseHalController {
     /*
      * Disabled for now until proper user auth is enabled.
      */
-//    @Path("/{" + ID + "}")
-//    @DELETE
-//    public Response deleteById(@PathParam(ID) String id) {
-//        mediaService.delete(id);
-//        return Response.noContent().build();
-//    }
+    @Path("/{" + Constants.ID + "}")
+    @DELETE
+    public Response deleteById(@PathParam(Constants.ID) String id) {
+        mediaService.deleteById(id);
+        return Response.noContent().build();
+    }
 
     @Override
     public Representation getCapabilities() {
         Representation repr = representationFactory.newRepresentation(getSelf());
         repr.withLink("get_by_id", getSelf() + "{/" + Constants.ID + "}");
         repr.withLink("insert", getSelf());
+        repr.withLink("delete_by_id", getSelf() + "{/" + Constants.ID + "}");
         return repr;
     }
 
@@ -222,6 +224,15 @@ public class MediaController extends BaseHalController {
     }
 
     private Response insertMedia(Media media) {
+
+        if (media.getLength() == 0) {
+            throw new IllegalArgumentException("data property CANNOT be zero length");
+        }
+
+        if (media.getLength() > MEGA_BYTES_12) {
+            throw new IllegalArgumentException("data property CANNOT be greater than 12 megabytes");
+        }
+
         Optional<? extends Media> optional = mediaService.insert(media);
         if (optional.isPresent()) {
             Media insertedMedia = optional.get();
