@@ -4,6 +4,7 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.context.annotation.Configuration;
 import uk.co.informaticslab.molab3dwxds.api.binders.DateTimeBinder;
+import uk.co.informaticslab.molab3dwxds.providers.DefaultExceptionMapper;
 
 /**
  * Configures and registers the endpoints & providers for jersey
@@ -17,6 +18,8 @@ public class JerseyConfiguration extends ResourceConfig {
         register(MultiPartFeature.class);
 
         register(new DateTimeBinder());
+
+        register(DefaultExceptionMapper.class);
 
         //registers the jaxrs support
         packages("com.theoryinpractise.halbuilder.jaxrs");
