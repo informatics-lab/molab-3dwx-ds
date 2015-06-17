@@ -20,6 +20,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -152,7 +153,7 @@ public class MediaController extends BaseHalController {
         DateTime forecastReferenceTime = form.getAsDateTime(Constants.FORECAST_REFERENCE_TIME);
         String phenomenon = form.getAsString(Constants.PHENOMENON);
         DataDimensions dataDimensions = form.getAsDataDimensions(Constants.DATA_DIMENSION_X, Constants.DATA_DIMENSION_Y, Constants.DATA_DIMENSION_Z);
-        GeographicRegion geographicRegion = form.getAsGeographicRegion(Constants.GEOGRAPHIC_REGION);
+        List<GeographicPoint> geographicRegion = form.getAsGeographicRegion(Constants.GEOGRAPHIC_REGION);
 
         Media video = new Video(data,
                 mimeType,
@@ -174,7 +175,7 @@ public class MediaController extends BaseHalController {
         DateTime forecastReferenceTime = form.getAsDateTime(Constants.FORECAST_REFERENCE_TIME);
         String phenomenon = form.getAsString(Constants.PHENOMENON);
         DataDimensions dataDimensions = form.getAsDataDimensions(Constants.DATA_DIMENSION_X, Constants.DATA_DIMENSION_Y, Constants.DATA_DIMENSION_Z);
-        GeographicRegion geographicRegion = form.getAsGeographicRegion(Constants.GEOGRAPHIC_REGION);
+        List<GeographicPoint> geographicRegion = form.getAsGeographicRegion(Constants.GEOGRAPHIC_REGION);
         DateTime forecastTime = form.getAsDateTime(Constants.FORECAST_TIME);
 
         Media image = new Image(data,

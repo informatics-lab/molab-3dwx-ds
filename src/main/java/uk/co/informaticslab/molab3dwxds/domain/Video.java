@@ -4,6 +4,8 @@ import org.joda.time.DateTime;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 /**
  * POJO for a video
  */
@@ -22,7 +24,7 @@ public class Video extends ModelBasedMedia {
                  DateTime forecastReferenceTime,
                  String phenomenon,
                  DataDimensions dataDimensions,
-                 GeographicRegion geographicRegion) {
+                 List<GeographicPoint> geographicRegion) {
         super(data, mimeType, resolution, model, forecastReferenceTime, phenomenon, dataDimensions, geographicRegion);
     }
 

@@ -8,7 +8,6 @@ import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.joda.time.DateTime;
 import uk.co.informaticslab.molab3dwxds.domain.DataDimensions;
 import uk.co.informaticslab.molab3dwxds.domain.GeographicPoint;
-import uk.co.informaticslab.molab3dwxds.domain.GeographicRegion;
 import uk.co.informaticslab.molab3dwxds.domain.Resolution;
 
 import java.io.InputStream;
@@ -65,15 +64,17 @@ public class MediaForm {
         }
     }
 
-    public GeographicRegion getAsGeographicRegion(String fieldName) {
+    public List<GeographicPoint> getAsGeographicRegion(String fieldName) {
         String jsonString = getAsString(fieldName);
         try {
             ObjectMapper mapper = new ObjectMapper();
             List<GeographicPoint> geographicPointList = mapper.readValue(jsonString,
                     TypeFactory.defaultInstance().constructCollectionType(List.class,
                             GeographicPoint.class));
-            GeographicRegion geographicRegion = new GeographicRegion(geographicPointList);
-            return geographicRegion;
+            if (geographicPointList.size() != 4) {
+                throw new IllegalArgumentException("A geographic region must consist of 4 geographic points");
+            }
+            return geographicPointList;
         } catch (Exception e) {
             throw new IllegalArgumentException("Unable to create geographic region from : " + jsonString, e);
         }

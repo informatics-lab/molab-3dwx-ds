@@ -4,6 +4,8 @@ import org.joda.time.DateTime;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 /**
  * POJO for an image
  */
@@ -23,7 +25,7 @@ public class Image extends ModelBasedMedia {
                  DateTime forecastReferenceTime,
                  String phenomenon,
                  DataDimensions dataDimensions,
-                 GeographicRegion geographicRegion,
+                 List<GeographicPoint> geographicRegion,
                  DateTime forecastTime) {
         super(data, mimeType, resolution, model, forecastReferenceTime, phenomenon, dataDimensions, geographicRegion);
         this.forecastTime = forecastTime;
