@@ -1,9 +1,7 @@
 package uk.co.informaticslab.molab3dwxds.api.controllers;
 
-import com.google.common.io.ByteStreams;
 import com.theoryinpractise.halbuilder.api.Representation;
 import com.theoryinpractise.halbuilder.api.RepresentationFactory;
-import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -13,6 +11,7 @@ import uk.co.informaticslab.molab3dwxds.api.caching.utils.CacheControlUtils;
 import uk.co.informaticslab.molab3dwxds.api.params.ByteRange;
 import uk.co.informaticslab.molab3dwxds.api.representations.MyRepresentationFactory;
 import uk.co.informaticslab.molab3dwxds.api.streaming.MediaStreamingResponse;
+import uk.co.informaticslab.molab3dwxds.api.utils.MediaForm;
 import uk.co.informaticslab.molab3dwxds.api.utils.UriResolver;
 import uk.co.informaticslab.molab3dwxds.domain.*;
 import uk.co.informaticslab.molab3dwxds.services.MediaService;
@@ -20,7 +19,6 @@ import uk.co.informaticslab.molab3dwxds.services.MediaService;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.InputStream;
 import java.net.URI;
 import java.util.Optional;
 
@@ -61,13 +59,13 @@ public class MediaController extends BaseHalController {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response insert(FormDataMultiPart form) {
         LOG.debug("Media posted to endpoint...");
-
-        String mimeType = form.getField(Constants.MIME_TYPE).getValue();
+        MediaForm mediaForm = new MediaForm(form);
+        String mimeType = mediaForm.getAsString(Constants.MIME_TYPE);
 
         if (mimeType.toLowerCase().contains("video")) {
-            return insertAsVideo(form);
+            return insertAsVideo(mediaForm);
         } else if (mimeType.toLowerCase().contains("image")) {
-            return insertAsImage(form);
+            return insertAsImage(mediaForm);
         } else {
             return Response.status(Response.Status.BAD_REQUEST).entity("mime type must be that of either image or video").build();
         }
@@ -108,6 +106,7 @@ public class MediaController extends BaseHalController {
 
         Optional<? extends Media> optional = mediaService.getById(id, true);
         if (optional.isPresent()) {
+
             Media media = optional.get();
 
             if (range == null) {
@@ -124,9 +123,6 @@ public class MediaController extends BaseHalController {
         }
     }
 
-    /*
-     * Disabled for now until proper user auth is enabled.
-     */
     @Path("/{" + Constants.ID + "}")
     @DELETE
     public Response deleteById(@PathParam(Constants.ID) String id) {
@@ -148,30 +144,15 @@ public class MediaController extends BaseHalController {
         return uriResolver.mkUriForClass(this.getClass());
     }
 
-    private Response insertAsVideo(FormDataMultiPart form) {
-        byte[] data;
-        String mimeType;
-        Resolution resolution;
-        String model;
-        DateTime forecastReferenceTime;
-        String phenomenon;
-        DataDimensions dataDimensions;
-
-        try {
-
-            FormDataBodyPart bodyPart = form.getField(Constants.DATA);
-            data = ByteStreams.toByteArray(bodyPart.getValueAs(InputStream.class));
-            mimeType = form.getField(Constants.MIME_TYPE).getValue();
-            resolution = Resolution.asDefault();
-            model = form.getField(Constants.MODEL).getValue();
-            forecastReferenceTime = new DateTime(form.getField(Constants.FORECAST_REFERENCE_TIME).getValue());
-            phenomenon = form.getField(Constants.PHENOMENON).getValue();
-            dataDimensions = DataDimensions.asDefault();
-
-        } catch (Exception e) {
-            LOG.error("Error reading multipart form data", e);
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
-        }
+    private Response insertAsVideo(MediaForm form) {
+        byte[] data = form.getAsData(Constants.DATA);
+        String mimeType = form.getAsString(Constants.MIME_TYPE);
+        Resolution resolution = form.getAsResolution(Constants.RESOLUTION_X, Constants.RESOLUTION_Y);
+        String model = form.getAsString(Constants.MODEL);
+        DateTime forecastReferenceTime = form.getAsDateTime(Constants.FORECAST_REFERENCE_TIME);
+        String phenomenon = form.getAsString(Constants.PHENOMENON);
+        DataDimensions dataDimensions = form.getAsDataDimensions(Constants.DATA_DIMENSION_X, Constants.DATA_DIMENSION_Y, Constants.DATA_DIMENSION_Z);
+        GeographicRegion geographicRegion = form.getAsGeographicRegion(Constants.GEOGRAPHIC_REGION);
 
         Media video = new Video(data,
                 mimeType,
@@ -179,37 +160,22 @@ public class MediaController extends BaseHalController {
                 model,
                 forecastReferenceTime,
                 phenomenon,
-                dataDimensions);
+                dataDimensions,
+                geographicRegion);
 
         return insertMedia(video);
     }
 
-    private Response insertAsImage(FormDataMultiPart form) {
-        byte[] data;
-        String mimeType;
-        Resolution resolution;
-        String model;
-        DateTime forecastReferenceTime;
-        String phenomenon;
-        DataDimensions dataDimensions;
-        DateTime forecastTime;
-
-        try {
-
-            FormDataBodyPart bodyPart = form.getField(Constants.DATA);
-            data = ByteStreams.toByteArray(bodyPart.getValueAs(InputStream.class));
-            mimeType = form.getField(Constants.MIME_TYPE).getValue();
-            resolution = Resolution.asDefault();
-            model = form.getField(Constants.MODEL).getValue();
-            forecastReferenceTime = new DateTime(form.getField(Constants.FORECAST_REFERENCE_TIME).getValue());
-            phenomenon = form.getField(Constants.PHENOMENON).getValue();
-            dataDimensions = DataDimensions.asDefault();
-            forecastTime = new DateTime(form.getField(Constants.FORECAST_TIME).getValue());
-
-        } catch (Exception e) {
-            LOG.error("Error reading multipart form data", e);
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
-        }
+    private Response insertAsImage(MediaForm form) {
+        byte[] data = form.getAsData(Constants.DATA);
+        String mimeType = form.getAsString(Constants.MIME_TYPE);
+        Resolution resolution = form.getAsResolution(Constants.RESOLUTION_X, Constants.RESOLUTION_Y);
+        String model = form.getAsString(Constants.MODEL);
+        DateTime forecastReferenceTime = form.getAsDateTime(Constants.FORECAST_REFERENCE_TIME);
+        String phenomenon = form.getAsString(Constants.PHENOMENON);
+        DataDimensions dataDimensions = form.getAsDataDimensions(Constants.DATA_DIMENSION_X, Constants.DATA_DIMENSION_Y, Constants.DATA_DIMENSION_Z);
+        GeographicRegion geographicRegion = form.getAsGeographicRegion(Constants.GEOGRAPHIC_REGION);
+        DateTime forecastTime = form.getAsDateTime(Constants.FORECAST_TIME);
 
         Media image = new Image(data,
                 mimeType,
@@ -218,6 +184,7 @@ public class MediaController extends BaseHalController {
                 forecastReferenceTime,
                 phenomenon,
                 dataDimensions,
+                geographicRegion,
                 forecastTime);
 
         return insertMedia(image);

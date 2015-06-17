@@ -22,7 +22,6 @@
         <spring.boot.version>1.2.3.RELEASE</spring.boot.version>
         <querydsl.version>3.6.3</querydsl.version>
         <halbuilder.version>1.1.1</halbuilder.version>
-        <tika.version>1.8</tika.version>
     </properties>
 
     <parent>
@@ -105,12 +104,6 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-joda</artifactId>
             <version>${jackson.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-core</artifactId>
-            <version>${tika.version}</version>
         </dependency>
 
     </dependencies>

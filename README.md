@@ -49,7 +49,12 @@ POST images to {root uri}/media with the following fields:
 'data'                    : image file  
 'mime_type'               : mime type of file eg. 'image/png'  
 'model'                   : name of model eg. 'uk_v'  
-
+'resolution_x'            : resolution of the image (x direction)  
+'resolution_y'            : resolution of the image (y direction)  
+'data_dimension_x'        : number of data values represented (x direction)  
+'data_dimension_y'        : number of data values represented (y direction)  
+'data_dimension_z'        : number of data values represented (z direction)  
+'geographic_region'       : a JSON array containing 4 geographic points. Each point must specify a 'lat' and 'lng' double property eg. '[{"lat":1.0,"lng":1.0}, ...]'  
 
 For sample representation see the json file attached.
 
@@ -59,7 +64,13 @@ POST videos to {root uri}/media with the following fields:
 'phenomenon'              : phenomenon that video represents eg. 'cloud_fraction_in_a_layer'  
 'data'                    : image file  
 'mime_type'               : mime type of file eg. 'video/ogg'  
-'model'                   : name of model eg. 'uk_v'  
+'model'                   : name of model eg. 'uk_v'
+'resolution_x'            : resolution of the video (x direction)  
+'resolution_y'            : resolution of the video (y direction)  
+'data_dimension_x'        : number of data values represented (x direction)  
+'data_dimension_y'        : number of data values represented (y direction)  
+'data_dimension_z'        : number of data values represented (z direction)  
+'geographic_region'       : a JSON array containing 4 geographic points. Each point must specify a 'lat' and 'lng' double property eg. '[{"lat":1.0,"lng":1.0}, ...]'  
 
 For sample representation see the json file attached.
 

@@ -11,6 +11,7 @@ public abstract class ModelBasedMedia extends Media {
     private DateTime forecastReferenceTime;
     private String phenomenon;
     private DataDimensions dataDimensions;
+    private GeographicRegion geographicRegion;
 
     public ModelBasedMedia() {
     }
@@ -21,12 +22,14 @@ public abstract class ModelBasedMedia extends Media {
                            String model,
                            DateTime forecastReferenceTime,
                            String phenomenon,
-                           DataDimensions dataDimensions) {
+                           DataDimensions dataDimensions,
+                           GeographicRegion geographicRegion) {
         super(data, mimeType, resolution);
         this.model = model;
         this.forecastReferenceTime = forecastReferenceTime;
         this.phenomenon = phenomenon;
         this.dataDimensions = dataDimensions;
+        this.geographicRegion = geographicRegion;
     }
 
     public String getModel() {
@@ -45,6 +48,10 @@ public abstract class ModelBasedMedia extends Media {
         return dataDimensions;
     }
 
+    public GeographicRegion getGeographicRegion() {
+        return geographicRegion;
+    }
+
     @Override
     public String toString() {
         return "ModelBasedMedia{" +
@@ -52,7 +59,7 @@ public abstract class ModelBasedMedia extends Media {
                 ", forecastReferenceTime=" + forecastReferenceTime +
                 ", phenomenon='" + phenomenon + '\'' +
                 ", dataDimensions=" + dataDimensions +
+                ", geographicRegion=" + geographicRegion +
                 "} " + super.toString();
     }
-
 }

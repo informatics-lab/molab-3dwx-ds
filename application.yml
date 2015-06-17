@@ -6,7 +6,6 @@ spring:
         name: MO Informatics Lab 3D Weather Data Service
     data:
         mongodb:
-            #host: ec2-52-16-246-202.eu-west-1.compute.amazonaws.com
             host: localhost
             port: 27017
             database: molab
