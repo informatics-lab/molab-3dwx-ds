@@ -64,7 +64,7 @@ POST videos to {root uri}/media with the following fields:
 'phenomenon'              : phenomenon that video represents eg. 'cloud_fraction_in_a_layer'  
 'data'                    : image file  
 'mime_type'               : mime type of file eg. 'video/ogg'  
-'model'                   : name of model eg. 'uk_v'
+'model'                   : name of model eg. 'uk_v'  
 'resolution_x'            : resolution of the video (x direction)  
 'resolution_y'            : resolution of the video (y direction)  
 'data_dimension_x'        : number of data values represented (x direction)  
