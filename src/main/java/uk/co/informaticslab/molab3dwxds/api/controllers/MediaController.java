@@ -111,7 +111,7 @@ public class MediaController extends BaseHalController {
             Media media = optional.get();
 
             if (range == null) {
-                range = ByteRange.between(0, media.getLength());
+                range = ByteRange.from(0);
             }
 
             return MediaStreamingResponse.media(media)
