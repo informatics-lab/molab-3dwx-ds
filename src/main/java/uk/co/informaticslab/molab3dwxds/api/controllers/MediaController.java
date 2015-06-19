@@ -110,6 +110,13 @@ public class MediaController extends BaseHalController {
 
             Media media = optional.get();
 
+            /*
+             * It has een suggested that it is bad practice to return a byte range response
+             * regardless of whether the client has asked for one.
+             *
+             * For the time being this is in place as without it a broken pipe exception occurs.
+             */
+
             if (range == null) {
                 range = ByteRange.from(0);
             }
