@@ -13,6 +13,7 @@ import java.net.URI;
  * Custom representation factory for JSON allows us to inject our own renderer/reader.
  */
 public class MyRepresentationFactory extends DefaultRepresentationFactory {
+
     public MyRepresentationFactory() {
         withRenderer(HAL_JSON, MyJsonRepresentationWriter.class);
         withReader(HAL_JSON, JsonRepresentationReader.class);

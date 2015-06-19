@@ -15,7 +15,8 @@ public class ApiConfiguration {
     public RepresentationFactory getRepresentationFactory() {
         RepresentationFactory representationFactory = new MyRepresentationFactory()
                 .withFlag(RepresentationFactory.PRETTY_PRINT)
-                .withFlag(RepresentationFactory.STRIP_NULLS);
+                .withFlag(RepresentationFactory.STRIP_NULLS)
+                .withFlag(RepresentationFactory.COALESCE_ARRAYS);
 
         return representationFactory;
     }
