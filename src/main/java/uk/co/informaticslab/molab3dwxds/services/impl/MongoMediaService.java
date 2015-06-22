@@ -153,6 +153,12 @@ public class MongoMediaService implements MediaService {
     }
 
     @Override
+    public void deleteAll() {
+        imageRepository.deleteAll();
+        videoRepository.deleteAll();
+    }
+
+    @Override
     public Iterable<Image> getImagesByFilter(String model, DateTime forecastReferenceTime, String phenomenon, ForecastTimeRange forecastTimeRange) {
         PredicateBuilder builder = new ImagePredicateBuilder(model, forecastReferenceTime, phenomenon, forecastTimeRange);
         Predicate predicate = builder.buildPredicate();

@@ -30,6 +30,8 @@ public interface MediaService {
 
     void deleteById(String id);
 
+    void deleteAll();
+
     Iterable<Image> getImagesByFilter(String model, DateTime forecastReferenceTime, String phenomenon, ForecastTimeRange forecastTimeRange);
 
     Iterable<Video> getVideosByFilter(String model, DateTime forecastReferenceTime, String phenomenon);

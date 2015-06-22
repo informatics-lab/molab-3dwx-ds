@@ -138,12 +138,20 @@ public class MediaController extends BaseHalController {
         return Response.noContent().build();
     }
 
+    @Path("/all")
+    @DELETE
+    public Response deleteAll() {
+        mediaService.deleteAll();
+        return Response.noContent().build();
+    }
+
     @Override
     public Representation getCapabilities() {
         Representation repr = representationFactory.newRepresentation(getSelf());
         repr.withLink("get_by_id", getSelf() + "{/" + Constants.ID + "}");
         repr.withLink("insert", getSelf());
         repr.withLink("delete_by_id", getSelf() + "{/" + Constants.ID + "}");
+        repr.withLink("delete_all", getSelf() + "/all");
         return repr;
     }
 
