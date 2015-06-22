@@ -14,7 +14,7 @@ import uk.co.informaticslab.molab3dwxds.domain.Image;
  */
 public interface ImageRepository extends MongoRepository<Image, String>, QueryDslPredicateExecutor<Image> {
 
-    @Query(value = "{}", fields = "{ 'data' : 0 }")
+    @Query(value = "{ '_id' : ?0 }", fields = "{ 'data' : 0 }")
     Image findImageMetaById(String id);
 
     @Query(value = "{}", fields = "{ 'data' : 0 }")

@@ -16,7 +16,7 @@ import uk.co.informaticslab.molab3dwxds.domain.Video;
  */
 public interface VideoRepository extends MongoRepository<Video, String>, QueryDslPredicateExecutor<Video> {
 
-    @Query(value = "{}", fields = "{ 'data' : 0 }")
+    @Query(value = "{ '_id' : ?0 }", fields = "{ 'data' : 0 }")
     Video findVideoMetaById(String id);
 
     @Query(value = "{}", fields = "{ 'data' : 0 }")
