@@ -110,16 +110,21 @@ public class MediaController extends BaseHalController {
 
             Media media = optional.get();
 
-            if (range == null) {
+            if (range == null && media instanceof Image) {
                 return Response.ok(media.getData(), media.getMimeType())
                         .cacheControl(CacheControlUtils.permanent())
                         .build();
-            } else {
-                return MediaStreamingResponse.media(media)
-                        .range(range)
-                        .cacheControl(CacheControlUtils.permanent())
-                        .build();
+            } else if (range == null) {
+                /*
+                 * Always return a media streaming response for a video else we see an error in the logs.
+                 */
+                range = ByteRange.from(0);
             }
+
+            return MediaStreamingResponse.media(media)
+                    .range(range)
+                    .cacheControl(CacheControlUtils.permanent())
+                    .build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
         }

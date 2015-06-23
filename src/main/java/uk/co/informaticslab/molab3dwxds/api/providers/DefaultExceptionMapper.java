@@ -1,4 +1,4 @@
-package uk.co.informaticslab.molab3dwxds.providers;
+package uk.co.informaticslab.molab3dwxds.api.providers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -4,7 +4,7 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.context.annotation.Configuration;
 import uk.co.informaticslab.molab3dwxds.api.binders.DateTimeBinder;
-import uk.co.informaticslab.molab3dwxds.providers.DefaultExceptionMapper;
+import uk.co.informaticslab.molab3dwxds.api.providers.DefaultExceptionMapper;
 
 /**
  * Configures and registers the endpoints & providers for jersey

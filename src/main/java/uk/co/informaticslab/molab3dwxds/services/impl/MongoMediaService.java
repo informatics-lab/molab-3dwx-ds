@@ -199,6 +199,7 @@ public class MongoMediaService implements MediaService {
         Image latestImage = null;
         if (imagePage.getContent().size() == 1) {
             latestImage = imagePage.getContent().get(0);
+            LOG.debug("Latest image [ frt : {}, ft {} ]", latestImage.getForecastReferenceTime(), latestImage.getForecastTime());
         }
 
         VideoPredicateBuilder videoPredicateBuilder = new VideoPredicateBuilder(model, null, null, null);
@@ -207,10 +208,8 @@ public class MongoMediaService implements MediaService {
         Video latestVideo = null;
         if (videoPage.getContent().size() == 1) {
             latestVideo = videoPage.getContent().get(0);
+            LOG.debug("Latest video [ frt : {} ]", latestVideo.getForecastReferenceTime());
         }
-
-        LOG.debug("Latest image : {}", latestImage);
-        LOG.debug("Latest video : {}", latestVideo);
 
         if (latestImage != null && latestVideo != null) {
             if (latestImage.getForecastReferenceTime().isAfter(latestVideo.getForecastReferenceTime())) {
