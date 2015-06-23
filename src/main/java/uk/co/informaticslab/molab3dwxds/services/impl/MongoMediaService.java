@@ -100,18 +100,23 @@ public class MongoMediaService implements MediaService {
     @Override
     public List<String> getProcessingProfiles(String model, DateTime forecastReferenceTime, String phenomenon) {
         final List<String> uniqueProcessingProfiles = new ArrayList<>();
+
         ImagePredicateBuilder imagePredicateBuilder = new ImagePredicateBuilder(model, forecastReferenceTime, phenomenon, null, null);
+
         for (Image image : imageRepository.findAll(imagePredicateBuilder.buildPredicate())) {
             if (!uniqueProcessingProfiles.contains(image.getProcessingProfile())) {
                 uniqueProcessingProfiles.add(image.getProcessingProfile());
             }
         }
+
         VideoPredicateBuilder videoPredicateBuilder = new VideoPredicateBuilder(model, forecastReferenceTime, phenomenon, null);
+
         for (Video video : videoRepository.findAll(videoPredicateBuilder.buildPredicate())) {
             if (!uniqueProcessingProfiles.contains(video.getProcessingProfile())) {
                 uniqueProcessingProfiles.add(video.getProcessingProfile());
             }
         }
+
         return uniqueProcessingProfiles;
     }
 
