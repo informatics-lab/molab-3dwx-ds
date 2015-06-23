@@ -163,6 +163,7 @@ public class MediaController extends BaseHalController {
         String phenomenon = form.getAsString(Constants.PHENOMENON);
         DataDimensions dataDimensions = form.getAsDataDimensions(Constants.DATA_DIMENSION_X, Constants.DATA_DIMENSION_Y, Constants.DATA_DIMENSION_Z);
         List<GeographicPoint> geographicRegion = form.getAsGeographicRegion(Constants.GEOGRAPHIC_REGION);
+        String processingProfile = form.getAsString(Constants.PROCESSING_PROFILE);
 
         Media video = new Video(data,
                 mimeType,
@@ -171,7 +172,8 @@ public class MediaController extends BaseHalController {
                 forecastReferenceTime,
                 phenomenon,
                 dataDimensions,
-                geographicRegion);
+                geographicRegion,
+                processingProfile);
 
         return insertMedia(video);
     }
@@ -185,6 +187,7 @@ public class MediaController extends BaseHalController {
         String phenomenon = form.getAsString(Constants.PHENOMENON);
         DataDimensions dataDimensions = form.getAsDataDimensions(Constants.DATA_DIMENSION_X, Constants.DATA_DIMENSION_Y, Constants.DATA_DIMENSION_Z);
         List<GeographicPoint> geographicRegion = form.getAsGeographicRegion(Constants.GEOGRAPHIC_REGION);
+        String processingProfile = form.getAsString(Constants.PROCESSING_PROFILE);
         DateTime forecastTime = form.getAsDateTime(Constants.FORECAST_TIME);
 
         Media image = new Image(data,
@@ -195,6 +198,7 @@ public class MediaController extends BaseHalController {
                 phenomenon,
                 dataDimensions,
                 geographicRegion,
+                processingProfile,
                 forecastTime);
 
         return insertMedia(image);

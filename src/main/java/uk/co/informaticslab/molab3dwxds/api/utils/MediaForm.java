@@ -18,6 +18,8 @@ import java.util.List;
  */
 public class MediaForm {
 
+    //TODO replace exceptions thrown here with webapplication exceptions
+
     private final FormDataMultiPart form;
 
     public MediaForm(FormDataMultiPart form) {

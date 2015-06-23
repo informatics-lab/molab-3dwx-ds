@@ -26,8 +26,9 @@ public class Image extends ModelBasedMedia {
                  String phenomenon,
                  DataDimensions dataDimensions,
                  List<GeographicPoint> geographicRegion,
+                 String processingProfile,
                  DateTime forecastTime) {
-        super(data, mimeType, resolution, model, forecastReferenceTime, phenomenon, dataDimensions, geographicRegion);
+        super(data, mimeType, resolution, model, forecastReferenceTime, phenomenon, dataDimensions, geographicRegion, processingProfile);
         this.forecastTime = forecastTime;
     }
 

@@ -51,11 +51,8 @@ public class PhenomenonController extends BaseHalController {
     @Override
     public Representation getCapabilities() {
         Representation repr = representationFactory.newRepresentation(getSelf());
-        if (mediaService.countImages(model, forecastReferenceTime, phenomenon) > 0) {
-            repr.withLink("images", getSelf() + "/images");
-        }
-        if (mediaService.countVideos(model, forecastReferenceTime, phenomenon) > 0) {
-            repr.withLink("videos", getSelf() + "/videos");
+        for (String processingProfile : mediaService.getProcessingProfiles(model, forecastReferenceTime, phenomenon)) {
+            repr.withLink(processingProfile, getSelf() + "/" + processingProfile);
         }
         return repr;
     }

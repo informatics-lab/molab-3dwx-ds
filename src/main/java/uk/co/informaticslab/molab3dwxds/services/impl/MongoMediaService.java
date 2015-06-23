@@ -60,24 +60,6 @@ public class MongoMediaService implements MediaService {
     }
 
     @Override
-    public List<String> getPhenomenons(String model, DateTime forecastReferenceTime) {
-        final List<String> uniquePhenomenons = new ArrayList<>();
-        ImagePredicateBuilder imagePredicateBuilder = new ImagePredicateBuilder(model, forecastReferenceTime, null, null);
-        for (Image image : imageRepository.findAllImageMeta(imagePredicateBuilder.buildPredicate())) {
-            if (!uniquePhenomenons.contains(image.getPhenomenon())) {
-                uniquePhenomenons.add(image.getPhenomenon());
-            }
-        }
-        VideoPredicateBuilder videoPredicateBuilder = new VideoPredicateBuilder(model, forecastReferenceTime, null);
-        for (Video video : videoRepository.findAll(videoPredicateBuilder.buildPredicate())) {
-            if (!uniquePhenomenons.contains(video.getPhenomenon())) {
-                uniquePhenomenons.add(video.getPhenomenon());
-            }
-        }
-        return uniquePhenomenons;
-    }
-
-    @Override
     public List<DateTime> getForecastReferenceTimes(String model) {
 
         final List<DateTime> uniqueForecastReferenceTimes = new ArrayList<>();
@@ -98,13 +80,50 @@ public class MongoMediaService implements MediaService {
     }
 
     @Override
-    public int countImages(String model, DateTime forecastReferenceTime, String phenomenon) {
-        return imageRepository.countByModelAndForecastReferenceTimeAndPhenomenon(model, forecastReferenceTime, phenomenon);
+    public List<String> getPhenomenons(String model, DateTime forecastReferenceTime) {
+        final List<String> uniquePhenomenons = new ArrayList<>();
+        ImagePredicateBuilder imagePredicateBuilder = new ImagePredicateBuilder(model, forecastReferenceTime, null, null, null);
+        for (Image image : imageRepository.findAll(imagePredicateBuilder.buildPredicate())) {
+            if (!uniquePhenomenons.contains(image.getPhenomenon())) {
+                uniquePhenomenons.add(image.getPhenomenon());
+            }
+        }
+        VideoPredicateBuilder videoPredicateBuilder = new VideoPredicateBuilder(model, forecastReferenceTime, null, null);
+        for (Video video : videoRepository.findAll(videoPredicateBuilder.buildPredicate())) {
+            if (!uniquePhenomenons.contains(video.getPhenomenon())) {
+                uniquePhenomenons.add(video.getPhenomenon());
+            }
+        }
+        return uniquePhenomenons;
     }
 
     @Override
-    public int countVideos(String model, DateTime forecastReferenceTime, String phenomenon) {
-        return videoRepository.countByModelAndForecastReferenceTimeAndPhenomenon(model, forecastReferenceTime, phenomenon);
+    public List<String> getProcessingProfiles(String model, DateTime forecastReferenceTime, String phenomenon) {
+        final List<String> uniqueProcessingProfiles = new ArrayList<>();
+        ImagePredicateBuilder imagePredicateBuilder = new ImagePredicateBuilder(model, forecastReferenceTime, phenomenon, null, null);
+        for (Image image : imageRepository.findAll(imagePredicateBuilder.buildPredicate())) {
+            if (!uniqueProcessingProfiles.contains(image.getProcessingProfile())) {
+                uniqueProcessingProfiles.add(image.getProcessingProfile());
+            }
+        }
+        VideoPredicateBuilder videoPredicateBuilder = new VideoPredicateBuilder(model, forecastReferenceTime, phenomenon, null);
+        for (Video video : videoRepository.findAll(videoPredicateBuilder.buildPredicate())) {
+            if (!uniqueProcessingProfiles.contains(video.getProcessingProfile())) {
+                uniqueProcessingProfiles.add(video.getProcessingProfile());
+            }
+        }
+        return uniqueProcessingProfiles;
+    }
+
+
+    @Override
+    public int countImages(String model, DateTime forecastReferenceTime, String phenomenon, String processingProfile) {
+        return imageRepository.countByModelAndForecastReferenceTimeAndPhenomenonAndProcessingProfile(model, forecastReferenceTime, phenomenon, processingProfile);
+    }
+
+    @Override
+    public int countVideos(String model, DateTime forecastReferenceTime, String phenomenon, String processingProfile) {
+        return videoRepository.countByModelAndForecastReferenceTimeAndPhenomenonAndProcessingProfile(model, forecastReferenceTime, phenomenon, processingProfile);
     }
 
     @Override
@@ -159,30 +178,31 @@ public class MongoMediaService implements MediaService {
     }
 
     @Override
-    public Iterable<Image> getImagesByFilter(String model, DateTime forecastReferenceTime, String phenomenon, ForecastTimeRange forecastTimeRange) {
-        PredicateBuilder builder = new ImagePredicateBuilder(model, forecastReferenceTime, phenomenon, forecastTimeRange);
+    public Iterable<Image> getImagesByFilter(String model, DateTime forecastReferenceTime, String phenomenon, String processingProfile, ForecastTimeRange forecastTimeRange) {
+        PredicateBuilder builder = new ImagePredicateBuilder(model, forecastReferenceTime, phenomenon, processingProfile, forecastTimeRange);
         Predicate predicate = builder.buildPredicate();
         return imageRepository.findAll(predicate);
     }
 
     @Override
-    public Iterable<Video> getVideosByFilter(String model, DateTime forecastReferenceTime, String phenomenon) {
-        LOG.debug("Getting videos for {}, {}, {}", model, forecastReferenceTime, phenomenon);
-        return videoRepository.findAllVideoMetaByModelAndForecastReferenceTimeAndPhenomenon(model, forecastReferenceTime, phenomenon);
+    public Iterable<Video> getVideosByFilter(String model, DateTime forecastReferenceTime, String phenomenon, String processingProfile) {
+        PredicateBuilder builder = new VideoPredicateBuilder(model, forecastReferenceTime, phenomenon, processingProfile);
+        Predicate predicate = builder.buildPredicate();
+        return videoRepository.findAll(predicate);
     }
 
     @Override
     public Optional<DateTime> getLatestForecastReferenceTime(String model) {
-        ImagePredicateBuilder imagePredicateBuilder = new ImagePredicateBuilder(model, null, null, null);
-        Page<Image> imagePage = imageRepository.findAllImageMeta(imagePredicateBuilder.buildPredicate(), LATEST_FORECAST_REFERENCE_TIME);
+        ImagePredicateBuilder imagePredicateBuilder = new ImagePredicateBuilder(model, null, null, null, null);
+        Page<Image> imagePage = imageRepository.findAll(imagePredicateBuilder.buildPredicate(), LATEST_FORECAST_REFERENCE_TIME);
 
         Image latestImage = null;
         if (imagePage.getContent().size() == 1) {
             latestImage = imagePage.getContent().get(0);
         }
 
-        VideoPredicateBuilder videoPredicateBuilder = new VideoPredicateBuilder(model, null, null);
-        Page<Video> videoPage = videoRepository.findAllVideoMetaByPredicateWithPageable(videoPredicateBuilder.buildPredicate(), LATEST_FORECAST_REFERENCE_TIME);
+        VideoPredicateBuilder videoPredicateBuilder = new VideoPredicateBuilder(model, null, null, null);
+        Page<Video> videoPage = videoRepository.findAll(videoPredicateBuilder.buildPredicate(), LATEST_FORECAST_REFERENCE_TIME);
 
         Video latestVideo = null;
         if (videoPage.getContent().size() == 1) {

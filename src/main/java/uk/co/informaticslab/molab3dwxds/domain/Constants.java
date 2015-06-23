@@ -29,6 +29,8 @@ public final class Constants {
 
     public static final String FORECAST_TIME = "forecast_time";
 
+    public static final String PROCESSING_PROFILE = "processing_profile";
+
     /*
      * Util
      */

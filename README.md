@@ -55,6 +55,7 @@ POST images to {root uri}/media with the following fields:
 'data_dimension_y'        : number of data values represented (y direction)  
 'data_dimension_z'        : number of data values represented (z direction)  
 'geographic_region'       : a JSON array containing 4 geographic points. Each point must specify a 'lat' and 'lng' double property eg. '[{"lat":1.0,"lng":1.0}, ...]'  
+'processing_profile'      : description of the processing method used to generate this data  
 
 For sample representation see the json file attached.
 
@@ -71,6 +72,7 @@ POST videos to {root uri}/media with the following fields:
 'data_dimension_y'        : number of data values represented (y direction)  
 'data_dimension_z'        : number of data values represented (z direction)  
 'geographic_region'       : a JSON array containing 4 geographic points. Each point must specify a 'lat' and 'lng' double property eg. '[{"lat":1.0,"lng":1.0}, ...]'  
+'processing_profile'      : description of the processing method used to generate this data  
 
 For sample representation see the json file attached.
 

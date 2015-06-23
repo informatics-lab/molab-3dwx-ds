@@ -19,12 +19,14 @@ public class ImagePredicateBuilder extends DTRangePredicateBuilder {
     private final String model;
     private final DateTime forecastReferenceTime;
     private final String phenomenon;
+    private final String processingProfile;
     private final ForecastTimeRange forecastTimeRange;
 
-    public ImagePredicateBuilder(String model, DateTime forecastReferenceTime, String phenomenon, ForecastTimeRange forecastTimeRange) {
+    public ImagePredicateBuilder(String model, DateTime forecastReferenceTime, String phenomenon, String processingProfile, ForecastTimeRange forecastTimeRange) {
         this.model = model;
         this.forecastReferenceTime = forecastReferenceTime;
         this.phenomenon = phenomenon;
+        this.processingProfile = processingProfile;
         this.forecastTimeRange = forecastTimeRange;
     }
 
@@ -44,6 +46,10 @@ public class ImagePredicateBuilder extends DTRangePredicateBuilder {
             booleanExpressions.add(createPhenomenonExpression(phenomenon));
         }
 
+        if (processingProfile != null) {
+            booleanExpressions.add(createProcessingProfileExpression(processingProfile));
+        }
+
         if (forecastTimeRange != null && forecastTimeRange.isDateRangeSet()) {
             booleanExpressions.add(createForecastTimeRangeExpression(forecastTimeRange));
         }
@@ -61,6 +67,10 @@ public class ImagePredicateBuilder extends DTRangePredicateBuilder {
 
     private BooleanExpression createPhenomenonExpression(String phenomenon) {
         return QImage.image.phenomenon.eq(phenomenon);
+    }
+
+    private BooleanExpression createProcessingProfileExpression(String processingProfile) {
+        return QImage.image.processingProfile.eq(processingProfile);
     }
 
     private BooleanExpression createForecastTimeRangeExpression(ForecastTimeRange dtRangeParam) {

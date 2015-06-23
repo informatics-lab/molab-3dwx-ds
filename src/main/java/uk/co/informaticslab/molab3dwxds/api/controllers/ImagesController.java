@@ -23,7 +23,12 @@ import java.net.URI;
 /**
  * Controller class for the images endpoint
  */
-@Path(ModelsController.MODELS + "/{" + ModelController.MODEL + "}/{" + ForecastReferenceTimeController.FORECAST_REFERENCE_TIME + "}/{" + PhenomenonController.PHENOMENON + "}/" + ImagesController.IMAGES)
+@Path(ModelsController.MODELS
+        + "/{" + ModelController.MODEL + "}"
+        + "/{" + ForecastReferenceTimeController.FORECAST_REFERENCE_TIME + "}"
+        + "/{" + PhenomenonController.PHENOMENON + "}"
+        + "/{" + ProcessingProfileController.PROCESSING_PROFILE + "}"
+        + "/" + ImagesController.IMAGES)
 public class ImagesController extends BaseHalController {
 
     public static final String IMAGES = "images";
@@ -34,6 +39,7 @@ public class ImagesController extends BaseHalController {
     private final String model;
     private final DateTime forecastReferenceTime;
     private final String phenomenon;
+    private final String processingProfile;
 
     @Autowired
     public ImagesController(MyRepresentationFactory representationFactory,
@@ -41,12 +47,14 @@ public class ImagesController extends BaseHalController {
                             MediaService mediaService,
                             @PathParam(ModelController.MODEL) String model,
                             @PathParam(ForecastReferenceTimeController.FORECAST_REFERENCE_TIME) DateTime forecastReferenceTime,
-                            @PathParam(PhenomenonController.PHENOMENON) String phenomenon) {
+                            @PathParam(PhenomenonController.PHENOMENON) String phenomenon,
+                            @PathParam(ProcessingProfileController.PROCESSING_PROFILE) String processingProfile) {
         super(representationFactory, uriResolver);
         this.mediaService = mediaService;
         this.model = model;
         this.forecastReferenceTime = forecastReferenceTime;
         this.phenomenon = phenomenon;
+        this.processingProfile = processingProfile;
     }
 
     @GET
@@ -56,7 +64,7 @@ public class ImagesController extends BaseHalController {
 
         LOG.debug("{} = {}", Constants.FORECAST_TIME, forecastTimeRange);
 
-        Iterable<Image> images = mediaService.getImagesByFilter(model, forecastReferenceTime, phenomenon, forecastTimeRange);
+        Iterable<Image> images = mediaService.getImagesByFilter(model, forecastReferenceTime, phenomenon, processingProfile, forecastTimeRange);
 
         Representation repr;
         if (!forecastTimeRange.isDateRangeSet()) {
@@ -80,7 +88,7 @@ public class ImagesController extends BaseHalController {
 
     @Override
     public URI getSelf() {
-        return uriResolver.mkUri(ModelsController.MODELS, model, forecastReferenceTime, IMAGES);
+        return uriResolver.mkUri(ModelsController.MODELS, model, forecastReferenceTime, phenomenon, processingProfile, IMAGES);
     }
 
     private String buildFilterURI() {

@@ -30,6 +30,7 @@ public class MyRepresentationFactory extends DefaultRepresentationFactory {
         repr.withProperty(Constants.DATA_DIMENSIONS, image.getDataDimensions());
         repr.withProperty(Constants.FORECAST_TIME, image.getForecastTime());
         repr.withProperty(Constants.GEOGRAPHIC_REGION, image.getGeographicRegion());
+        repr.withProperty(Constants.PROCESSING_PROFILE, image.getProcessingProfile());
         return repr;
     }
 
@@ -43,6 +44,7 @@ public class MyRepresentationFactory extends DefaultRepresentationFactory {
         repr.withProperty(Constants.PHENOMENON, video.getPhenomenon());
         repr.withProperty(Constants.DATA_DIMENSIONS, video.getDataDimensions());
         repr.withProperty(Constants.GEOGRAPHIC_REGION, video.getGeographicRegion());
+        repr.withProperty(Constants.PROCESSING_PROFILE, video.getProcessingProfile());
         return repr;
     }
 }

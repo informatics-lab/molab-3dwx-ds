@@ -14,6 +14,7 @@ public abstract class ModelBasedMedia extends Media {
     private String phenomenon;
     private DataDimensions dataDimensions;
     private List<GeographicPoint> geographicRegion;
+    private String processingProfile;
 
     public ModelBasedMedia() {
     }
@@ -25,13 +26,15 @@ public abstract class ModelBasedMedia extends Media {
                            DateTime forecastReferenceTime,
                            String phenomenon,
                            DataDimensions dataDimensions,
-                           List<GeographicPoint> geographicRegion) {
+                           List<GeographicPoint> geographicRegion,
+                           String processingProfile) {
         super(data, mimeType, resolution);
         this.model = model;
         this.forecastReferenceTime = forecastReferenceTime;
         this.phenomenon = phenomenon;
         this.dataDimensions = dataDimensions;
         this.geographicRegion = geographicRegion;
+        this.processingProfile = processingProfile;
     }
 
     public String getModel() {
@@ -54,6 +57,10 @@ public abstract class ModelBasedMedia extends Media {
         return geographicRegion;
     }
 
+    public String getProcessingProfile() {
+        return processingProfile;
+    }
+
     @Override
     public String toString() {
         return "ModelBasedMedia{" +
@@ -62,6 +69,7 @@ public abstract class ModelBasedMedia extends Media {
                 ", phenomenon='" + phenomenon + '\'' +
                 ", dataDimensions=" + dataDimensions +
                 ", geographicRegion=" + geographicRegion +
+                ", processingProfile='" + processingProfile + '\'' +
                 "} " + super.toString();
     }
 }

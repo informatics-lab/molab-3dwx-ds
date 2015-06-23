@@ -24,8 +24,9 @@ public class Video extends ModelBasedMedia {
                  DateTime forecastReferenceTime,
                  String phenomenon,
                  DataDimensions dataDimensions,
-                 List<GeographicPoint> geographicRegion) {
-        super(data, mimeType, resolution, model, forecastReferenceTime, phenomenon, dataDimensions, geographicRegion);
+                 List<GeographicPoint> geographicRegion,
+                 String processingProfile) {
+        super(data, mimeType, resolution, model, forecastReferenceTime, phenomenon, dataDimensions, geographicRegion, processingProfile);
     }
 
     @Override
