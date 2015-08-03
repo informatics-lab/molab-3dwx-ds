@@ -1,0 +1,41 @@
+# Distribution Application Properties
+# see http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+
+spring:
+    application:
+        name: MO Informatics Lab 3D Weather Data Service
+    data:
+        mongodb:
+            host: mongo
+            port: 27017
+            database: molab
+            repositories:
+                enabled: true
+
+box:
+    host-name: data.3dvis.informaticslab.co.uk
+
+server:
+    port: 9000
+    context-path: /molab-3dwx-ds
+
+#logging:
+#    config: logback.xml
+
+
+# LOGGING
+#logging.path=/var/logs
+#logging.file=myapp.log
+#logging.config= # location of config file (default classpath:logback.xml for logback)
+#logging.level.*= # levels for loggers, e.g. "logging.level.org.springframework=DEBUG" (TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF)
+
+# MONGODB (MongoProperties)
+#spring.data.mongodb.host= # the db host
+#spring.data.mongodb.port=27017 # the connection port (defaults to 27107)
+#spring.data.mongodb.uri=mongodb://localhost/test # connection URL
+#spring.data.mongodb.database=
+#spring.data.mongodb.authentication-database=
+#spring.data.mongodb.grid-fs-database=
+#spring.data.mongodb.username=
+#spring.data.mongodb.password=
+#spring.data.mongodb.repositories.enabled=true # if spring data repository support is enabled
