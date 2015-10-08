@@ -186,7 +186,7 @@ public class MongoMediaService implements MediaService {
     public Iterable<Image> getImagesByFilter(String model, DateTime forecastReferenceTime, String phenomenon, String processingProfile, ForecastTimeRange forecastTimeRange) {
         PredicateBuilder builder = new ImagePredicateBuilder(model, forecastReferenceTime, phenomenon, processingProfile, forecastTimeRange);
         Predicate predicate = builder.buildPredicate();
-        return imageRepository.findAll(predicate);
+        return imageRepository.findAll(predicate, ImagePredicateBuilder.orderByForcastTime());
     }
 
     @Override
