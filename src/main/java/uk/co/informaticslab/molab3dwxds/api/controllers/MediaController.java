@@ -32,7 +32,7 @@ public class MediaController extends BaseHalController {
     public static final String MEDIA = "media";
 
     private static final Logger LOG = LoggerFactory.getLogger(MediaController.class);
-    public static final int MEGA_BYTES_12 = 1024 * 1024 * 12;
+    public static final int MEGA_BYTES_15 = 1024 * 1024 * 15;
 
     private final MediaService mediaService;
 
@@ -215,8 +215,8 @@ public class MediaController extends BaseHalController {
             throw new IllegalArgumentException("data property CANNOT be zero length");
         }
 
-        if (media.getLength() > MEGA_BYTES_12) {
-            throw new IllegalArgumentException("data property CANNOT be greater than 12 megabytes");
+        if (media.getLength() > MEGA_BYTES_15) {
+            throw new IllegalArgumentException("data property CANNOT be greater than 15 megabytes");
         }
 
         Optional<? extends Media> optional = mediaService.insert(media);

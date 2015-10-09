@@ -1,5 +1,6 @@
 package uk.co.informaticslab.molab3dwxds.services.repositories.query;
 
+import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.Predicate;
 import com.mysema.query.types.expr.BooleanExpression;
 import com.mysema.query.types.path.DateTimePath;
@@ -77,5 +78,10 @@ public class ImagePredicateBuilder extends DTRangePredicateBuilder {
         DateTimePath<DateTime> path = QImage.image.forecastTime;
         return createDTRangeExpression(path, dtRangeParam);
     }
+
+    public static OrderSpecifier<DateTime> orderByForcastTime() {
+        return QImage.image.forecastTime.asc();
+    }
+
 
 }
