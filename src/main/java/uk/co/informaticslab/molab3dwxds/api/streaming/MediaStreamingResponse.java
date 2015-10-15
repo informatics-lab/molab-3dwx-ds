@@ -20,7 +20,7 @@ public final class MediaStreamingResponse {
 
     public static final class MediaStreamingResponseBuilder {
 
-        public static int DEFAULT_CHUNK_SIZE = 1024 * 1024; // 1MB
+        public static int DEFAULT_CHUNK_SIZE = 1000 * 1000; // 1MB
 
         private final Response.ResponseBuilder respBuilder = Response.status(Response.Status.PARTIAL_CONTENT);
 

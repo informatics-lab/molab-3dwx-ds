@@ -23,7 +23,11 @@ public class ServerConfiguration {
 
     public URI getServerUri() {
         try {
-            return new URI("http://" + serverName + serverContext);
+            if (serverName.equals("localhost")) {
+                return new URI("http://" + serverName + ":" + serverPort + serverContext);
+            } else {
+                return new URI("http://" + serverName + serverContext);
+            }
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }

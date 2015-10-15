@@ -26,6 +26,8 @@ public interface MediaService {
 
     int countVideos(String model, DateTime forecastReferenceTime, String phenomenon, String processingProfile);
 
+    int countVideos();
+
     Optional<? extends Media> insert(Media media);
 
     Optional<? extends Media> getById(String id, boolean withData);
