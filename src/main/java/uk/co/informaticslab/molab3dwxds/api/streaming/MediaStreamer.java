@@ -32,9 +32,9 @@ public class MediaStreamer implements StreamingOutput {
         int offset = byteRange.getFrom();
         int length = byteRange.getLength();
 
-        LOGGER.debug("data length: {}", data.length);
-        LOGGER.debug("offset: {}", offset);
-        LOGGER.debug("length: {}", length);
+        LOGGER.debug("total data length: {}", data.length);
+        LOGGER.debug("current offset: {}", offset);
+        LOGGER.debug("this data length: {}", length);
 
         output.write(data, offset, length);
         output.flush();

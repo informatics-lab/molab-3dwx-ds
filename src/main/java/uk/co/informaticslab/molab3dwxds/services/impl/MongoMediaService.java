@@ -132,6 +132,11 @@ public class MongoMediaService implements MediaService {
     }
 
     @Override
+    public int countVideos() {
+        return (int) videoRepository.count();
+    }
+
+    @Override
     public Optional<? extends Media> insert(Media media) {
         if (media instanceof Image) {
             Image image = (Image) media;

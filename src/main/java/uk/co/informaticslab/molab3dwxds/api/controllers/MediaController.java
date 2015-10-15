@@ -130,27 +130,38 @@ public class MediaController extends BaseHalController {
         }
     }
 
-    @Path("/{" + Constants.ID + "}")
-    @DELETE
-    public Response deleteById(@PathParam(Constants.ID) String id) {
-        mediaService.deleteById(id);
-        return Response.noContent().build();
-    }
+    /*
+     * Disabled to stop people from the outside deleting our content
+     */
 
-    @Path("/all")
-    @DELETE
-    public Response deleteAll() {
-        mediaService.deleteAll();
-        return Response.noContent().build();
-    }
+//    @Path("/{" + Constants.ID + "}")
+//    @DELETE
+//    public Response deleteById(@PathParam(Constants.ID) String id) {
+//        mediaService.deleteById(id);
+//        return Response.noContent().build();
+//    }
+
+//    @Path("/all")
+//    @DELETE
+//    public Response deleteAll() {
+//        mediaService.deleteAll();
+//        return Response.noContent().build();
+//    }
 
     @Override
     public Representation getCapabilities() {
         Representation repr = representationFactory.newRepresentation(getSelf());
         repr.withLink("get_by_id", getSelf() + "{/" + Constants.ID + "}");
         repr.withLink("insert", getSelf());
-        repr.withLink("delete_by_id", getSelf() + "{/" + Constants.ID + "}");
-        repr.withLink("delete_all", getSelf() + "/all");
+
+        /*
+         * Disabled to stop people from the outside deleting our content
+         */
+//        repr.withLink("delete_by_id", getSelf() + "{/" + Constants.ID + "}");
+//        repr.withLink("delete_all", getSelf() + "/all");
+        if (mediaService.countVideos() > 0) {
+            repr.withLink("videos", getSelf() + "/videos");
+        }
         return repr;
     }
 
