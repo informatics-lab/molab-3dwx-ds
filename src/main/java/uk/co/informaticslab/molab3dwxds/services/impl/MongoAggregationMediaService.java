@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOptions;
 import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
 import org.springframework.stereotype.Service;
 import uk.co.informaticslab.molab3dwxds.domain.Video;
@@ -45,7 +46,9 @@ public class MongoAggregationMediaService {
                         .and("result.resolution").as("resolution")
         );
 
-        return mongoTemplate.aggregate(aggregation, Video.class).getMappedResults();
+        AggregationOptions opts = new AggregationOptions.Builder().allowDiskUse(true).build();
+
+        return mongoTemplate.aggregate(aggregation.withOptions(opts), Video.class).getMappedResults();
     }
 
 }
