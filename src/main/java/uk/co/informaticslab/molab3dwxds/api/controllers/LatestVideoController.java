@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import uk.co.informaticslab.molab3dwxds.api.representations.MyRepresentationFactory;
 import uk.co.informaticslab.molab3dwxds.api.utils.UriResolver;
 import uk.co.informaticslab.molab3dwxds.domain.Video;
-import uk.co.informaticslab.molab3dwxds.services.impl.MongoAggregationMediaService;
+import uk.co.informaticslab.molab3dwxds.services.impl.AdvancedMongoMediaService;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -23,12 +23,12 @@ public class LatestVideoController extends BaseHalController {
 
     public static final String VIDEOS = "videos";
 
-    private final MongoAggregationMediaService mongoAggregationMediaService;
+    private final AdvancedMongoMediaService mongoAggregationMediaService;
 
     @Autowired
     public LatestVideoController(MyRepresentationFactory representationFactory,
                                  UriResolver uriResolver,
-                                 MongoAggregationMediaService mongoAggregationMediaService) {
+                                 AdvancedMongoMediaService mongoAggregationMediaService) {
         super(representationFactory, uriResolver);
         this.mongoAggregationMediaService = mongoAggregationMediaService;
     }

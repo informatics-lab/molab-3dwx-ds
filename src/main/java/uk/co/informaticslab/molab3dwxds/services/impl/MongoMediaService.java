@@ -1,6 +1,5 @@
 package uk.co.informaticslab.molab3dwxds.services.impl;
 
-import com.mysema.query.types.Predicate;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import uk.co.informaticslab.molab3dwxds.api.params.ForecastTimeRange;
 import uk.co.informaticslab.molab3dwxds.domain.Image;
 import uk.co.informaticslab.molab3dwxds.domain.Media;
 import uk.co.informaticslab.molab3dwxds.domain.Video;
@@ -18,7 +16,6 @@ import uk.co.informaticslab.molab3dwxds.services.MediaService;
 import uk.co.informaticslab.molab3dwxds.services.repositories.ImageRepository;
 import uk.co.informaticslab.molab3dwxds.services.repositories.VideoRepository;
 import uk.co.informaticslab.molab3dwxds.services.repositories.query.ImagePredicateBuilder;
-import uk.co.informaticslab.molab3dwxds.services.repositories.query.PredicateBuilder;
 import uk.co.informaticslab.molab3dwxds.services.repositories.query.VideoPredicateBuilder;
 
 import java.util.ArrayList;
@@ -132,7 +129,7 @@ public class MongoMediaService implements MediaService {
     }
 
     @Override
-    public int countVideos() {
+    public int countAllVideos() {
         return (int) videoRepository.count();
     }
 
@@ -188,17 +185,8 @@ public class MongoMediaService implements MediaService {
     }
 
     @Override
-    public Iterable<Image> getImagesByFilter(String model, DateTime forecastReferenceTime, String phenomenon, String processingProfile, ForecastTimeRange forecastTimeRange) {
-        PredicateBuilder builder = new ImagePredicateBuilder(model, forecastReferenceTime, phenomenon, processingProfile, forecastTimeRange);
-        Predicate predicate = builder.buildPredicate();
-        return imageRepository.findAll(predicate, ImagePredicateBuilder.orderByForcastTime());
-    }
-
-    @Override
     public Iterable<Video> getVideosByFilter(String model, DateTime forecastReferenceTime, String phenomenon, String processingProfile) {
-        PredicateBuilder builder = new VideoPredicateBuilder(model, forecastReferenceTime, phenomenon, processingProfile);
-        Predicate predicate = builder.buildPredicate();
-        return videoRepository.findAll(predicate);
+        return videoRepository.findAllVideoMetaByModelAndForecastReferenceTimeAndPhenomenonAndProcessingProfile(model, forecastReferenceTime, phenomenon, processingProfile);
     }
 
     @Override

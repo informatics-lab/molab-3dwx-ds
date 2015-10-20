@@ -1,8 +1,6 @@
 package uk.co.informaticslab.molab3dwxds.services;
 
 import org.joda.time.DateTime;
-import uk.co.informaticslab.molab3dwxds.api.params.ForecastTimeRange;
-import uk.co.informaticslab.molab3dwxds.domain.Image;
 import uk.co.informaticslab.molab3dwxds.domain.Media;
 import uk.co.informaticslab.molab3dwxds.domain.Video;
 
@@ -26,7 +24,7 @@ public interface MediaService {
 
     int countVideos(String model, DateTime forecastReferenceTime, String phenomenon, String processingProfile);
 
-    int countVideos();
+    int countAllVideos();
 
     Optional<? extends Media> insert(Media media);
 
@@ -35,8 +33,6 @@ public interface MediaService {
     void deleteById(String id);
 
     void deleteAll();
-
-    Iterable<Image> getImagesByFilter(String model, DateTime forecastReferenceTime, String phenomenon, String processingProfile, ForecastTimeRange forecastTimeRange);
 
     Iterable<Video> getVideosByFilter(String model, DateTime forecastReferenceTime, String phenomenon, String processingProfile);
 

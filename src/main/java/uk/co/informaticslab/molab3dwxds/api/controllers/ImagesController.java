@@ -12,7 +12,7 @@ import uk.co.informaticslab.molab3dwxds.api.representations.MyRepresentationFact
 import uk.co.informaticslab.molab3dwxds.api.utils.UriResolver;
 import uk.co.informaticslab.molab3dwxds.domain.Constants;
 import uk.co.informaticslab.molab3dwxds.domain.Image;
-import uk.co.informaticslab.molab3dwxds.services.MediaService;
+import uk.co.informaticslab.molab3dwxds.services.impl.AdvancedMongoMediaService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -35,7 +35,7 @@ public class ImagesController extends BaseHalController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ImagesController.class);
 
-    private final MediaService mediaService;
+    private final AdvancedMongoMediaService mediaService;
     private final String model;
     private final DateTime forecastReferenceTime;
     private final String phenomenon;
@@ -44,7 +44,7 @@ public class ImagesController extends BaseHalController {
     @Autowired
     public ImagesController(MyRepresentationFactory representationFactory,
                             UriResolver uriResolver,
-                            MediaService mediaService,
+                            AdvancedMongoMediaService mediaService,
                             @PathParam(ModelController.MODEL) String model,
                             @PathParam(ForecastReferenceTimeController.FORECAST_REFERENCE_TIME) DateTime forecastReferenceTime,
                             @PathParam(PhenomenonController.PHENOMENON) String phenomenon,
@@ -64,7 +64,7 @@ public class ImagesController extends BaseHalController {
 
         LOG.debug("{} = {}", Constants.FORECAST_TIME, forecastTimeRange);
 
-        Iterable<Image> images = mediaService.getImagesByFilter(model, forecastReferenceTime, phenomenon, processingProfile, forecastTimeRange);
+        Iterable<Image> images = mediaService.findAllImageMetaByFilter(model, forecastReferenceTime, phenomenon, processingProfile, forecastTimeRange);
 
         Representation repr;
         if (!forecastTimeRange.isDateRangeSet()) {

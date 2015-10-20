@@ -159,7 +159,7 @@ public class MediaController extends BaseHalController {
          */
 //        repr.withLink("delete_by_id", getSelf() + "{/" + Constants.ID + "}");
 //        repr.withLink("delete_all", getSelf() + "/all");
-        if (mediaService.countVideos() > 0) {
+        if (mediaService.countAllVideos() > 0) {
             repr.withLink("videos", getSelf() + "/videos");
         }
         return repr;
