@@ -77,48 +77,6 @@ public class MongoMediaService implements MediaService {
     }
 
     @Override
-    public List<String> getPhenomenons(String model, DateTime forecastReferenceTime) {
-        final List<String> uniquePhenomenons = new ArrayList<>();
-        ImagePredicateBuilder imagePredicateBuilder = new ImagePredicateBuilder(model, forecastReferenceTime, null, null, null);
-        for (Image image : imageRepository.findAll(imagePredicateBuilder.buildPredicate())) {
-            if (!uniquePhenomenons.contains(image.getPhenomenon())) {
-                uniquePhenomenons.add(image.getPhenomenon());
-            }
-        }
-        VideoPredicateBuilder videoPredicateBuilder = new VideoPredicateBuilder(model, forecastReferenceTime, null, null);
-        for (Video video : videoRepository.findAll(videoPredicateBuilder.buildPredicate())) {
-            if (!uniquePhenomenons.contains(video.getPhenomenon())) {
-                uniquePhenomenons.add(video.getPhenomenon());
-            }
-        }
-        return uniquePhenomenons;
-    }
-
-    @Override
-    public List<String> getProcessingProfiles(String model, DateTime forecastReferenceTime, String phenomenon) {
-        final List<String> uniqueProcessingProfiles = new ArrayList<>();
-
-        ImagePredicateBuilder imagePredicateBuilder = new ImagePredicateBuilder(model, forecastReferenceTime, phenomenon, null, null);
-
-        for (Image image : imageRepository.findAll(imagePredicateBuilder.buildPredicate())) {
-            if (!uniqueProcessingProfiles.contains(image.getProcessingProfile())) {
-                uniqueProcessingProfiles.add(image.getProcessingProfile());
-            }
-        }
-
-        VideoPredicateBuilder videoPredicateBuilder = new VideoPredicateBuilder(model, forecastReferenceTime, phenomenon, null);
-
-        for (Video video : videoRepository.findAll(videoPredicateBuilder.buildPredicate())) {
-            if (!uniqueProcessingProfiles.contains(video.getProcessingProfile())) {
-                uniqueProcessingProfiles.add(video.getProcessingProfile());
-            }
-        }
-
-        return uniqueProcessingProfiles;
-    }
-
-
-    @Override
     public int countImages(String model, DateTime forecastReferenceTime, String phenomenon, String processingProfile) {
         return imageRepository.countByModelAndForecastReferenceTimeAndPhenomenonAndProcessingProfile(model, forecastReferenceTime, phenomenon, processingProfile);
     }

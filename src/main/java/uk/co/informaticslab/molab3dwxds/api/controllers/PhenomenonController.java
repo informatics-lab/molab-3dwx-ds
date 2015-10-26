@@ -6,7 +6,9 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.co.informaticslab.molab3dwxds.api.representations.MyRepresentationFactory;
 import uk.co.informaticslab.molab3dwxds.api.utils.UriResolver;
-import uk.co.informaticslab.molab3dwxds.services.MediaService;
+import uk.co.informaticslab.molab3dwxds.domain.Image;
+import uk.co.informaticslab.molab3dwxds.domain.Video;
+import uk.co.informaticslab.molab3dwxds.services.impl.AdvancedMongoMediaService;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -14,6 +16,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by tom on 02/06/2015.
@@ -23,7 +27,7 @@ public class PhenomenonController extends BaseHalController {
 
     public static final String PHENOMENON = "phenomenon";
 
-    private final MediaService mediaService;
+    private final AdvancedMongoMediaService mediaService;
     private final String model;
     private final DateTime forecastReferenceTime;
     private final String phenomenon;
@@ -31,7 +35,7 @@ public class PhenomenonController extends BaseHalController {
     @Autowired
     public PhenomenonController(MyRepresentationFactory representationFactory,
                                 UriResolver uriResolver,
-                                MediaService mediaService,
+                                AdvancedMongoMediaService mediaService,
                                 @PathParam(ModelController.MODEL) String model,
                                 @PathParam(ForecastReferenceTimeController.FORECAST_REFERENCE_TIME) DateTime forecastReferenceTime,
                                 @PathParam(PHENOMENON) String phenomenon) {
@@ -51,10 +55,26 @@ public class PhenomenonController extends BaseHalController {
     @Override
     public Representation getCapabilities() {
         Representation repr = representationFactory.newRepresentation(getSelf());
-        for (String processingProfile : mediaService.getProcessingProfiles(model, forecastReferenceTime, phenomenon)) {
+        for (String processingProfile : getProcessingProfilesFromMediaService(model, forecastReferenceTime, phenomenon)) {
             repr.withLink(processingProfile, getSelf() + "/" + processingProfile);
         }
         return repr;
+    }
+
+    private List<String> getProcessingProfilesFromMediaService(String model, DateTime forecastReferenceTime, String phenomenon) {
+        final List<String> uniqueProcessingProfiles = new ArrayList<>();
+
+        for (Image image : mediaService.findAllImageMetaByFilter(model, forecastReferenceTime, phenomenon, null, null)) {
+            if (!uniqueProcessingProfiles.contains(image.getPhenomenon())) {
+                uniqueProcessingProfiles.add(image.getPhenomenon());
+            }
+        }
+        for (Video video : mediaService.findAllVideoMetaByFilter(model, forecastReferenceTime, phenomenon, null)) {
+            if (!uniqueProcessingProfiles.contains(video.getPhenomenon())) {
+                uniqueProcessingProfiles.add(video.getPhenomenon());
+            }
+        }
+        return uniqueProcessingProfiles;
     }
 
     @Override

@@ -84,6 +84,29 @@ public class AdvancedMongoMediaService {
 
     }
 
+    public Iterable<Video> findAllVideoMetaByFilter(String model, DateTime forecastReferenceTime, String phenomenon, String processingProfile) {
+        LOG.debug("calling");
+        Query q = new Query();
+        if (model != null) {
+            q.addCriteria(Criteria.where("model").is(model));
+        }
+        if (forecastReferenceTime != null) {
+            q.addCriteria(Criteria.where("forecastReferenceTime").is(forecastReferenceTime));
+        }
+        if (phenomenon != null) {
+            q.addCriteria(Criteria.where("phenomenon").is(phenomenon));
+        }
+        if (processingProfile != null) {
+            q.addCriteria(Criteria.where("processingProfile").is(processingProfile));
+        }
+
+        q.fields().exclude("data");
+        q.with(new Sort(Sort.Direction.ASC, "forecastTime"));
+
+        return mongoTemplate.find(q, Video.class);
+
+    }
+
     private CriteriaDefinition getCriteriaDefinitionForDTRange(String dtKey, DTRange dtRange) {
         Criteria c = new Criteria(dtKey);
         if (dtRange.isGt()) {

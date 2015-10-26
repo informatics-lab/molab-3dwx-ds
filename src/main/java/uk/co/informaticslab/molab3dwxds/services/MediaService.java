@@ -16,10 +16,6 @@ public interface MediaService {
 
     List<DateTime> getForecastReferenceTimes(String model);
 
-    List<String> getPhenomenons(String model, DateTime forecastReferenceTime);
-
-    List<String> getProcessingProfiles(String model, DateTime forecastReferenceTime, String phenomenon);
-
     int countImages(String model, DateTime forecastReferenceTime, String phenomenon, String processingProfile);
 
     int countVideos(String model, DateTime forecastReferenceTime, String phenomenon, String processingProfile);
