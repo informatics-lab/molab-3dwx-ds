@@ -11,6 +11,7 @@ RUN cd /usr/src/molab-3dwx-ds && mvn clean install
 RUN mkdir /opt/molab-3dwx-ds
 WORKDIR /opt/molab-3dwx-ds
 
+#alter max heap size
 ENV APP_NAME "molab-3dwx-ds"
 ENV HEADLESS_SETTING "-Djava.awt.headless=true"
 ENV MEMORY_SETTINGS "-Xmx2048m -XX:PermSize=64m -XX:MaxPermSize=128m"
