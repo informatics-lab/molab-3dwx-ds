@@ -65,13 +65,13 @@ public class PhenomenonController extends BaseHalController {
         final List<String> uniqueProcessingProfiles = new ArrayList<>();
 
         for (Image image : mediaService.findAllImageMetaByFilter(model, forecastReferenceTime, phenomenon, null, null)) {
-            if (!uniqueProcessingProfiles.contains(image.getPhenomenon())) {
-                uniqueProcessingProfiles.add(image.getPhenomenon());
+            if (!uniqueProcessingProfiles.contains(image.getProcessingProfile())) {
+                uniqueProcessingProfiles.add(image.getProcessingProfile());
             }
         }
         for (Video video : mediaService.findAllVideoMetaByFilter(model, forecastReferenceTime, phenomenon, null)) {
-            if (!uniqueProcessingProfiles.contains(video.getPhenomenon())) {
-                uniqueProcessingProfiles.add(video.getPhenomenon());
+            if (!uniqueProcessingProfiles.contains(video.getProcessingProfile())) {
+                uniqueProcessingProfiles.add(video.getProcessingProfile());
             }
         }
         return uniqueProcessingProfiles;

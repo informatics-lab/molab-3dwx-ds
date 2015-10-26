@@ -78,7 +78,7 @@ public class AdvancedMongoMediaService {
         }
 
         q.fields().exclude("data");
-        q.with(new Sort(Sort.Direction.ASC, "forecastTime"));
+//        q.with(new Sort(Sort.Direction.ASC, "forecastTime"));
 
         return mongoTemplate.find(q, Image.class);
 
@@ -101,7 +101,7 @@ public class AdvancedMongoMediaService {
         }
 
         q.fields().exclude("data");
-        q.with(new Sort(Sort.Direction.ASC, "forecastTime"));
+//        q.with(new Sort(Sort.Direction.DESC, "forecastReferenceTime"));
 
         return mongoTemplate.find(q, Video.class);
 

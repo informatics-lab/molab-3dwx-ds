@@ -3,6 +3,8 @@ package uk.co.informaticslab.molab3dwxds.api.controllers;
 import com.theoryinpractise.halbuilder.api.Representation;
 import com.theoryinpractise.halbuilder.api.RepresentationFactory;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.co.informaticslab.molab3dwxds.api.representations.MyRepresentationFactory;
 import uk.co.informaticslab.molab3dwxds.api.utils.UriResolver;
@@ -25,6 +27,7 @@ import java.util.List;
 @Path(ModelsController.MODELS + "/{" + ModelController.MODEL + "}/{" + ForecastReferenceTimeController.FORECAST_REFERENCE_TIME + "}")
 public class ForecastReferenceTimeController extends BaseHalController {
 
+    public static final Logger LOG = LoggerFactory.getLogger(ForecastReferenceTimeController.class);
     public static final String FORECAST_REFERENCE_TIME = "forecast_reference_time";
 
     private final AdvancedMongoMediaService mediaService;
@@ -64,11 +67,13 @@ public class ForecastReferenceTimeController extends BaseHalController {
         final List<String> uniquePhenomenons = new ArrayList<>();
 
         for (Image image : mediaService.findAllImageMetaByFilter(model, forecastReferenceTime, null, null, null)) {
+//            LOG.debug("IMAGE :\n" + image.toString());
             if (!uniquePhenomenons.contains(image.getPhenomenon())) {
                 uniquePhenomenons.add(image.getPhenomenon());
             }
         }
         for (Video video : mediaService.findAllVideoMetaByFilter(model, forecastReferenceTime, null, null)) {
+//            LOG.debug("VIDEO :\n" + video.toString());
             if (!uniquePhenomenons.contains(video.getPhenomenon())) {
                 uniquePhenomenons.add(video.getPhenomenon());
             }
